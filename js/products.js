@@ -100,12 +100,12 @@ const productsData = [
         name: "健康指数-卫健委版本",
         slug: "health-index-wjw",
         description: "面向卫健委及医疗机构部署的患者健康管理平台，提供健康指数动态追踪、指标趋势分析、异常预警及个性化建议，助力医疗机构有效留存患者，实现诊后持续关怀与复诊引导，推动区域健康管理数字化转型。",
-        targetUsers: "医生",
+        targetUsers: "患者",
         iconClass: "fas fa-file-alt",
         iconColor: "#1661AB",
         category: 3,
-        demoLink: "http://health-index-wjw.showcase.effortlessai.cn/",
-        platform: "Web端",
+        demoLink: "http://health-index-wjw-showcase.effortlessai.cn/",
+        platform: "移动端",
         scenario: [3, 2]
     },
     // 7. 信手拈来检验报告解读-医生端
