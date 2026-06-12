@@ -1,0 +1,558 @@
+/* ============================================================
+   手到擒来 · 医疗软件产品中心 — 主样式表
+   品牌色系: #1661AB (深蓝) / #F7F9FC (浅灰蓝背景)
+   ============================================================ */
+
+/* ---------- Reset & Base ---------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(160deg, #F7F9FC 0%, #EDF2F9 100%);
+    color: #1B2A3A;
+    line-height: 1.4;
+    scroll-behavior: smooth;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ---------- Layout Container ---------- */
+.app-container {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0.25rem 1.5rem 0.8rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+/* ---------- Hero / Header ---------- */
+.hero {
+    margin-bottom: 0.6rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 0.8rem;
+    border-bottom: 1.5px solid rgba(22, 97, 171, 0.18);
+    padding-bottom: 0.6rem;
+}
+
+.brand {
+    flex: 1;
+}
+
+.brand h1 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #1661AB, #0F4A85);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    letter-spacing: -0.3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.brand-logo {
+    height: 2.4rem;
+    width: auto;
+    vertical-align: middle;
+    margin-right: 2px;
+}
+
+.brand h1 i {
+    background: none;
+    color: #1661AB;
+    font-size: 1.5rem;
+    background-clip: unset;
+    -webkit-background-clip: unset;
+}
+
+.brand .tagline {
+    color: #5B7A9A;
+    font-size: 0.78rem;
+    margin-top: 0.25rem;
+    font-weight: 400;
+    border-left: 2px solid #1661AB;
+    padding-left: 0.6rem;
+}
+
+/* ---------- Filter Bar ---------- */
+.filter-bar {
+    margin-bottom: 0.8rem;
+    display: flex;
+    justify-content: center;
+}
+
+.filter-segment {
+    position: relative;
+    display: inline-flex;
+    background: #E8EEF6;
+    border-radius: 50px;
+    padding: 4px;
+    box-shadow: inset 0 1.5px 4px rgba(0,0,0,0.08), 0 2px 8px rgba(22,97,171,0.06);
+}
+
+.filter-btn {
+    position: relative;
+    z-index: 1;
+    background: transparent;
+    border: none;
+    padding: 0.4rem 1.1rem;
+    border-radius: 50px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #5B7A9A;
+    cursor: pointer;
+    transition: color 0.25s;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.filter-btn.active {
+    color: #fff;
+}
+
+.filter-indicator {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    height: calc(100% - 8px);
+    border-radius: 50px;
+    background: linear-gradient(135deg, #1661AB, #0F4A85);
+    box-shadow: 0 2px 8px rgba(22,97,171,0.35), 0 1px 2px rgba(0,0,0,0.1);
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+/* ---------- Product Card Grid ---------- */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.2rem;
+    transition: 0.2s;
+    flex: 1;
+    align-content: start;
+}
+
+/* ---------- Product Card ---------- */
+.product-card {
+    background: #fff;
+    border-radius: 1.2rem;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 12px -2px rgba(22, 97, 171, 0.06);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(22, 97, 171, 0.08);
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px -6px rgba(22, 97, 171, 0.12);
+    border-color: rgba(22, 97, 171, 0.25);
+}
+
+.card-header {
+    padding: 1rem 1rem 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #F0F4FA;
+}
+
+.card-icon {
+    background: linear-gradient(135deg, #EEF2F8, #E2E9F2);
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 1.3rem;
+    transition: 0.2s;
+}
+
+.product-card:hover .card-icon {
+    background: linear-gradient(135deg, #E2E9F2, #D6DFEC);
+    transform: scale(0.96);
+}
+
+.product-name {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    color: #1B2A3A;
+    line-height: 1.3;
+}
+
+.card-body {
+    padding: 0.6rem 1rem 0.5rem 1rem;
+    flex: 1;
+}
+
+.description {
+    color: #5A7088;
+    font-size: 0.72rem;
+    line-height: 1.4;
+    margin-bottom: 0.6rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2rem;
+}
+
+/* ---------- Platform Tags ---------- */
+.audience-section {
+    margin: 0.4rem 0 0.3rem;
+}
+
+.platform-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0.15rem 0.55rem;
+    border-radius: 40px;
+    font-size: 0.55rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    margin-bottom: 0.35rem;
+}
+
+.platform-mobile {
+    background: #EBF7EE;
+    color: #3AAA35;
+}
+
+.platform-web {
+    background: #E3ECF6;
+    color: #1661AB;
+}
+
+/* ---------- Audience Tags ---------- */
+.audience-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    color: #8BA5C0;
+    margin-bottom: 0.35rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.audience-tags {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.35rem;
+    overflow: hidden;
+}
+
+.tag {
+    background: #EDF2F8;
+    padding: 0.2rem 0.55rem;
+    border-radius: 40px;
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: #1661AB;
+    transition: 0.1s;
+    letter-spacing: 0.2px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.tag i {
+    font-size: 0.55rem;
+    color: #4A8DCE;
+}
+
+/* ---------- Card Footer / Button ---------- */
+.card-footer {
+    padding: 0.3rem 1rem 0.8rem 1rem;
+    margin-top: auto;
+}
+
+.btn-detail {
+    background: transparent;
+    border: 1px solid #CDDEEE;
+    width: 100%;
+    padding: 0.5rem 0;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 0.7rem;
+    color: #1661AB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    text-decoration: none;
+}
+
+.btn-detail i {
+    font-size: 0.65rem;
+    transition: transform 0.2s;
+}
+
+.btn-detail:hover {
+    background: #1661AB;
+    border-color: #1661AB;
+    color: white;
+    box-shadow: 0 4px 12px rgba(22, 97, 171, 0.3);
+}
+
+.btn-detail:hover i {
+    transform: translateX(3px);
+    color: white;
+}
+
+/* ---------- Empty State ---------- */
+.empty-state {
+    text-align: center;
+    padding: 3.5rem 2rem;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 2rem;
+    margin-top: 1rem;
+    color: #8BA5C0;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.6;
+    color: #1661AB;
+}
+
+/* ---------- Footer / 公司简介 ---------- */
+.footer {
+    margin-top: auto;
+    text-align: center;
+    font-size: 0.72rem;
+    color: #7A95AE;
+    line-height: 1.8;
+    border-top: 1px solid rgba(22, 97, 171, 0.12);
+    padding: 1rem 0.5rem 0.5rem;
+    flex-shrink: 0;
+}
+
+.footer p {
+    margin-bottom: 0.3rem;
+}
+
+.footer p:last-child {
+    color: #8BA5C0;
+}
+
+/* ---------- Demo Page Styles ---------- */
+.demo-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 3rem;
+}
+
+.demo-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #1661AB;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+    transition: color 0.2s;
+}
+
+.demo-back:hover {
+    color: #0F4A85;
+}
+
+.demo-hero {
+    background: #fff;
+    border-radius: 1.2rem;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 12px -2px rgba(22, 97, 171, 0.06);
+    border: 1px solid rgba(22, 97, 171, 0.08);
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.demo-hero-icon {
+    background: linear-gradient(135deg, #EEF2F8, #E2E9F2);
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 18px;
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.demo-hero-info h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1B2A3A;
+    margin-bottom: 0.5rem;
+}
+
+.demo-hero-info .demo-desc {
+    color: #5A7088;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-bottom: 0.8rem;
+}
+
+.demo-meta {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+/* ---------- Demo Stage Area ---------- */
+.demo-stage {
+    background: #fff;
+    border-radius: 1.2rem;
+    padding: 2rem;
+    box-shadow: 0 2px 12px -2px rgba(22, 97, 171, 0.06);
+    border: 1px solid rgba(22, 97, 171, 0.08);
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.demo-stage .stage-placeholder {
+    text-align: center;
+    color: #8BA5C0;
+}
+
+.demo-stage .stage-placeholder i {
+    font-size: 4rem;
+    color: #1661AB;
+    opacity: 0.3;
+    margin-bottom: 1rem;
+}
+
+.demo-stage .stage-placeholder h3 {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #5B7A9A;
+}
+
+.demo-stage .stage-placeholder p {
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+}
+
+.btn-launch {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #1661AB, #0F4A85);
+    color: white;
+    border: none;
+    padding: 0.7rem 1.8rem;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    font-family: inherit;
+    text-decoration: none;
+}
+
+.btn-launch:hover {
+    box-shadow: 0 6px 20px rgba(22, 97, 171, 0.35);
+    transform: translateY(-1px);
+}
+
+.btn-launch i {
+    transition: transform 0.2s;
+}
+
+.btn-launch:hover i {
+    transform: translateX(3px);
+}
+
+/* ---------- Responsive Breakpoints ---------- */
+@media (max-width: 1200px) {
+    .products-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 860px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+    }
+
+    .demo-hero {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+@media (max-width: 540px) {
+    .app-container {
+        padding: 1.2rem 1rem 2rem;
+    }
+
+    .hero {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .brand h1 {
+        font-size: 1.6rem;
+    }
+
+    .products-grid {
+        gap: 0.8rem;
+        grid-template-columns: 1fr;
+    }
+
+    .card-header {
+        padding: 1rem 1rem 0.5rem;
+    }
+
+    .card-body {
+        padding: 0.6rem 1rem 0.5rem;
+    }
+
+    .card-footer {
+        padding: 0.5rem 1rem 1rem;
+    }
+
+    .demo-page {
+        padding: 1rem 0.8rem 2rem;
+    }
+
+    .demo-hero {
+        padding: 1.2rem;
+    }
+
+    .demo-stage {
+        padding: 1.2rem;
+        min-height: 300px;
+    }
+}
