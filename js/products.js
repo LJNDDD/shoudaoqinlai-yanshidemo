@@ -3,6 +3,26 @@
  * 全院级医疗软件产品库，唯一产品展示入口
  */
 
+/**
+ * 产品分类编码映射表（唯一维护入口）
+ * 新增分类只需在此追加，前端自动同步
+ */
+const categoryCode = {
+    1: "智慧体检产品",
+    2: "健康指数产品",
+    3: "健康管理产品",
+    4: "检验报告分析"
+};
+
+/**
+ * scenario 标签编码 → 对应分类编码
+ * 用于筛选时 scenario 到 category 的归属匹配
+ */
+const scenarioCategoryMap = {
+    1: 1,   // 智慧主检 → 智慧体检产品
+    2: 3    // 健康管理 → 健康管理产品
+};
+
 const productsData = [
     // 1. 天钥智能主检
     {
@@ -13,10 +33,10 @@ const productsData = [
         targetUsers: "主检医生",
         iconClass: "fas fa-file-medical-alt",
         iconColor: "#00897B",
-        category: "智慧体检产品",
+        category: 1,
         demoLink: "https://test.mai47.com/static/rdzntj/#/home/index",
         platform: "Web端",
-        scenario: ["智慧主检"]
+        scenario: [1]
     },
     // 2. 健康指数（内容后补）
     {
@@ -27,24 +47,24 @@ const productsData = [
         targetUsers: "社区医生, 健康管理医生",
         iconClass: "fas fa-heart-pulse",
         iconColor: "#3498DB",
-        category: "社区健康管理产品",
+        category: 3,
         demoLink: "http://192.168.13.175:15173",
         platform: "Web端",
-        scenario: ["健康管理"]
+        scenario: [3, 2]
     },
     // 3. 社区版健康指数报告
     {
         id: 3,
-        name: "社区版健康指数报告",
+        name: "健康指数-社区版本（患者端）",
         slug: "health-index-report",
         description: "面向患者的社区健康指数报告查看平台，支持查看个人健康指数评分、指标趋势分析、异常预警及个性化健康建议，帮助患者直观了解自身健康状况，实现与社区医生的高效联动。",
         targetUsers: "患者",
         iconClass: "fas fa-notes-medical",
         iconColor: "#2ECC71",
-        category: "社区健康管理产品",
+        category: 3,
         demoLink: "http://192.168.13.175:15174",
-        platform: "Web端",
-        scenario: ["健康管理"]
+        platform: "移动端",
+        scenario: [3, 2]
     },
     // 4. 智慧体检系统-患者端
     {
@@ -55,10 +75,10 @@ const productsData = [
         targetUsers: "患者",
         iconClass: "fas fa-heartbeat",
         iconColor: "#E74C3C",
-        category: "智慧体检产品",
+        category: 1,
         demoLink: "http://testhyhl.mai47.com:11042/hy/home",
         platform: "移动端",
-        scenario: ["智慧主检"]
+        scenario: [1, 3]
     },
     // 5. 检后管理系统
     {
@@ -69,10 +89,10 @@ const productsData = [
         targetUsers: "患者",
         iconClass: "fas fa-clipboard-list",
         iconColor: "#27AE60",
-        category: "社区健康管理产品",
+        category: 3,
         demoLink: "https://test.mai47.com/static/jhgl/#/pages/login/index",
         platform: "移动端",
-        scenario: ["健康管理"]
+        scenario: [3, 1]
     },
     // 6. 健康指数-卫健委版本
     {
@@ -80,13 +100,13 @@ const productsData = [
         name: "健康指数-卫健委版本",
         slug: "health-index-wjw",
         description: "面向卫健委及医疗机构部署的患者健康管理平台，提供健康指数动态追踪、指标趋势分析、异常预警及个性化建议，助力医疗机构有效留存患者，实现诊后持续关怀与复诊引导，推动区域健康管理数字化转型。",
-        targetUsers: "患者, 医生",
+        targetUsers: "医生",
         iconClass: "fas fa-file-alt",
         iconColor: "#1661AB",
-        category: "社区健康管理产品",
+        category: 3,
         demoLink: "http://health-index-wjw.showcase.effortlessai.cn/",
-        platform: "移动端",
-        scenario: ["健康管理"]
+        platform: "Web端",
+        scenario: [3, 2]
     },
     // 7. 信手拈来检验报告解读-医生端
     {
@@ -97,10 +117,10 @@ const productsData = [
         targetUsers: "临床医生, 检验科",
         iconClass: "fas fa-clipboard-check",
         iconColor: "#7B5EA7",
-        category: "检验报告分析",
+        category: 4,
         demoLink: "http://xsnl.mai47.com:8801/login",
         platform: "Web端",
-        scenario: ["智慧主检"]
+        scenario: [4]
     },
     // 8. 信手拈来检验报告解读-患者端
     {
@@ -111,9 +131,9 @@ const productsData = [
         targetUsers: "患者",
         iconClass: "fas fa-file-medical-alt",
         iconColor: "#2980B9",
-        category: "检验报告分析",
+        category: 4,
         demoLink: "http://xsnl.mai47.com:8082/login.html",
         platform: "移动端",
-        scenario: ["智慧主检"]
+        scenario: [4]
     },
 ];

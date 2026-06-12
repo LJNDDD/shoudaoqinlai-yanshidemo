@@ -101,7 +101,10 @@
     function renderProducts() {
         var filtered = productsData.filter(function (p) {
             if (p.hidden) return false;
-            if (currentCategory !== 'all' && p.category !== currentCategory) return false;
+            if (currentCategory !== 'all') {
+                var catCode = parseInt(currentCategory, 10);
+                if (p.category !== catCode && (p.scenario || []).indexOf(catCode) === -1) return false;
+            }
             return true;
         });
 
