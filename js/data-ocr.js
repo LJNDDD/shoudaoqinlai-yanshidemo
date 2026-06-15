@@ -1,11 +1,15 @@
 /**
- * 数据管理 — OCR 识别模块
- * 上传检验报告图片 → 识别 → 模糊匹配 → 用户编辑 → 保存
+ * 数据管理 — OCR 识别模块（百度云直连版）
+ * 浏览器直接调百度 OCR API，无需 server.js
  */
 (function () {
     'use strict';
 
-    // OCR 抽屉元素
+    // ========== 百度 OCR 配置（前端直连，密钥会公开在网页源码中） ==========
+    var BAIDU_API_KEY = 'uySaKd9FIcALlt8EcJDbGKEb';
+    var BAIDU_SECRET_KEY = 'Wjpo1ropGJpF5envhYiJKBcfWKLZtJjg';
+    var BAIDU_TOKEN = null; // 临时缓存
+
     var overlay = document.getElementById('ocrOverlay');
     var body = document.getElementById('ocrBody');
     var btnClose = document.getElementById('btnOcrClose');
@@ -13,7 +17,8 @@
     var btnConfirm = document.getElementById('btnOcrConfirm');
     var btnOcrEntry = document.getElementById('btnOcrEntry');
 
-    var ocrResult = null; // 当前识别结果
+    var ocrResult = null;
+    var referenceCache = null; // reference_data 缓存
 
     function escapeHtml(str) {
         if (!str) return '';
@@ -29,94 +34,159 @@
         setTimeout(function () { el.classList.add('fade-out'); setTimeout(function () { el.remove(); }, 300); }, 2500);
     }
 
-    var currentMode = 'upload'; // upload | result
+    // ========== OCR 文字提取逻辑（从 server.js 移到前端） ==========
 
-    /** 打开 OCR 抽屉 — 上传模式 */
-    function openUpload() {
-        currentMode = 'upload';
-        ocrResult = null;
-        btnConfirm.style.display = 'none';
+    function levenshtein(a, b) {
+        var m = a.length, n = b.length;
+        var dp = []; for (var i = 0; i <= m; i++) { dp[i] = []; for (var j = 0; j <= n; j++) dp[i][j] = i === 0 ? j : j === 0 ? i : 0; }
+        for (var i = 1; i <= m; i++) for (var j = 1; j <= n; j++) dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] : Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]) + 1;
+        return dp[m][n];
+    }
 
-        body.innerHTML = (
-            '<div class="ocr-upload-area" id="ocrDropZone">' +
-                '<i class="fas fa-cloud-upload-alt" style="font-size:3rem;color:#1661AB;opacity:0.4;"></i>' +
-                '<p style="margin-top:1rem;font-size:0.9rem;color:#5B7A9A;">拖拽图片到此处 或 点击选择</p>' +
-                '<p style="font-size:0.7rem;color:#8BA5C0;margin-top:0.3rem;">支持 JPG / PNG，检验报告单照片</p>' +
-                '<input type="file" id="ocrFileInput" accept="image/*" style="display:none;">' +
-                '<button class="btn btn-primary" id="btnOcrSelect" style="margin-top:1rem;">选择图片</button>' +
-            '</div>' +
-            '<div id="ocrLoading" style="display:none;text-align:center;padding:2rem;">' +
-                '<i class="fas fa-spinner fa-spin" style="font-size:2rem;color:#1661AB;"></i>' +
-                '<p style="margin-top:1rem;color:#5B7A9A;">正在识别中...</p>' +
-                '<p style="font-size:0.7rem;color:#8BA5C0;" id="ocrProgress"></p>' +
-            '</div>'
-        );
+    function similarity(a, b) {
+        var maxLen = Math.max(a.length, b.length);
+        if (maxLen === 0) return 1;
+        return 1 - levenshtein(a, b) / maxLen;
+    }
 
-        overlay.classList.add('show');
-
-        // 事件绑定
-        var dropZone = document.getElementById('ocrDropZone');
-        var fileInput = document.getElementById('ocrFileInput');
-        var btnSelect = document.getElementById('btnOcrSelect');
-
-        btnSelect.addEventListener('click', function () { fileInput.click(); });
-        fileInput.addEventListener('change', function () { if (this.files[0]) handleFile(this.files[0]); });
-
-        dropZone.addEventListener('click', function () { fileInput.click(); });
-        dropZone.addEventListener('dragover', function (e) { e.preventDefault(); this.style.borderColor = '#1661AB'; });
-        dropZone.addEventListener('dragleave', function (e) { this.style.borderColor = ''; });
-        dropZone.addEventListener('drop', function (e) {
-            e.preventDefault(); this.style.borderColor = '';
-            if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+    function matchIndicator(ocrText, refData) {
+        var best = null, bestScore = 0;
+        var clean = ocrText.replace(/[（(].*?[)）]/g, '').replace(/\s+/g, '').replace(/[^一-龥a-zA-Z0-9]/g, '').toLowerCase();
+        refData.forEach(function (ref) {
+            var refClean = ref.indicator_name.replace(/[（(].*?[)）]/g, '').replace(/\s+/g, '').replace(/[^一-龥a-zA-Z0-9]/g, '').toLowerCase();
+            var score = similarity(clean, refClean);
+            if (clean.indexOf(refClean) !== -1 || refClean.indexOf(clean) !== -1) score = Math.max(score, 0.8);
+            if (score > bestScore) { bestScore = score; best = ref; }
         });
+        return { match: best, score: bestScore };
     }
 
-    /** 处理文件上传 */
-    function handleFile(file) {
-        if (!file.type.match(/image\//)) { toast('请选择图片文件', 'error'); return; }
-
-        var dropZone = document.getElementById('ocrDropZone');
-        var loadingEl = document.getElementById('ocrLoading');
-        var progressEl = document.getElementById('ocrProgress');
-
-        dropZone.style.display = 'none';
-        loadingEl.style.display = 'block';
-        progressEl.textContent = '正在上传...';
-
-        // 读取为 base64
-        var reader = new FileReader();
-        reader.onload = function () {
-            progressEl.textContent = '正在 OCR 识别（可能需要 5-15 秒）...';
-            recognizeImage(reader.result);
-        };
-        reader.readAsDataURL(file);
+    function extractPatientInfo(text) {
+        var info = { name: '', gender: '', birthDate: '', age: '' };
+        var patterns = [/姓名[:：]\s*([^\n\r]+)/, /患者[:：]\s*([^\n\r]+)/, /姓名\s+([^\n\r]{2,4})/];
+        for (var i = 0; i < patterns.length; i++) { var m = text.match(patterns[i]); if (m) { info.name = m[1].trim(); break; } }
+        var gm = text.match(/性别[:：]\s*(男|女)/); if (gm) info.gender = gm[1];
+        var am = text.match(/年龄[:：]\s*(\d+)/); if (am) info.age = am[1];
+        var bm = text.match(/(?:出生日期|生日)[:：]\s*(\d{4}[-\/.]\d{1,2}[-\/.]\d{1,2})/); if (bm) info.birthDate = bm[1].replace(/[\/.]/g, '-');
+        var diagM = text.match(/临床诊断[:：]\s*([^\n\r]+)/); if (diagM && !info.name) info.name = '患者(' + diagM[1].trim() + ')';
+        return info;
     }
 
-    /** 调用 OCR API */
+    function extractVisitInfo(text) {
+        var info = { visitTime: '', sampleNo: '', dept: '' };
+        var dm = text.match(/(?:检验日期|采样日期|送检日期|报告日期|接收时间)[:：]\s*(\d{4}[-\/.]\d{1,2}[-\/.]\d{1,2})/); if (dm) info.visitTime = dm[1].replace(/[\/.]/g, '-');
+        var sm = text.match(/(?:样本号|标本号|条码号|编号)[:：]\s*([^\n\r]+)/); if (sm) info.sampleNo = sm[1].trim();
+        var depm = text.match(/(?:科室|送检科室|申请科室)[:：]\s*([^\n\r]+)/); if (depm) info.dept = depm[1].trim();
+        return info;
+    }
+
+    function extractIndicators(text) {
+        var lines = text.split('\n').map(function (l) { return l.trim(); }).filter(function (l) { return l.length > 0; });
+        var startIdx = 0;
+        for (var i = 0; i < lines.length; i++) {
+            if (/^(项目名称|英文与方法|结果|单位|参考值)/.test(lines[i])) {
+                var j = i + 1; while (j < lines.length && lines[j].length < 15 && !/[.*\d]/.test(lines[j])) j++;
+                startIdx = j; break;
+            }
+        }
+        var indicators = [];
+        var namePattern = /^[\d.*]+|.*[一-龥]/;
+        for (var i = startIdx; i < lines.length - 3; i++) {
+            var line = lines[i];
+            if (!namePattern.test(line)) continue;
+            if (/^(检验|报告|项目|序号|编号|结果|参考|单位|正常|异常|临床|接收|送检)/.test(line)) continue;
+            var name = line.replace(/^[\d.*\s]+/, '').trim();
+            var value = lines[i + 2] || '';
+            var unit = lines[i + 3] || '';
+            var reference = lines[i + 4] || '';
+            if (!/^[\d.]+$/.test(value)) continue;
+            if (!/[\d.<>～~]/.test(reference)) continue;
+            indicators.push({ name: name, value: unit ? value + ' ' + unit : value, reference: reference });
+            i += 4;
+        }
+        return indicators;
+    }
+
+    // ========== 百度 OCR 直接调用 ==========
+
+    async function getBaiduToken() {
+        if (BAIDU_TOKEN) return BAIDU_TOKEN;
+        var url = 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=' +
+            encodeURIComponent(BAIDU_API_KEY) + '&client_secret=' + encodeURIComponent(BAIDU_SECRET_KEY);
+        var res = await fetch(url);
+        var data = await res.json();
+        if (data.error) throw new Error(data.error_description || data.error);
+        BAIDU_TOKEN = data.access_token;
+        return BAIDU_TOKEN;
+    }
+
+    /** 加载 reference_data（用于模糊匹配） */
+    async function loadReferenceData() {
+        if (referenceCache) return referenceCache;
+        try {
+            var res = await fetch('/mock-data/reference-indicators.json');
+            referenceCache = await res.json();
+        } catch (e) {
+            referenceCache = [];
+        }
+        return referenceCache;
+    }
+
+    /** 调用 OCR + 解析 + 匹配（全前端完成） */
     async function recognizeImage(base64) {
         try {
-            var res = await fetch('/api/ocr/recognize', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ image: base64 }),
-            });
-            var contentType = res.headers.get('content-type') || '';
-            // 非 JSON 响应（如 404 HTML）
-            if (contentType.indexOf('application/json') === -1) {
-                throw new Error('OCR 服务不可用，请本地运行 node server.js');
-            }
-            var json = await res.json();
-            if (!json.success) throw new Error(json.message || '识别失败');
+        var rawBase64 = base64.replace(/^data:image\/\w+;base64,/, '');
 
-            ocrResult = json.data;
-            currentMode = 'result';
-            renderResult();
-            btnConfirm.style.display = '';
-            toast('识别完成！请核对并修改数据后保存', 'success');
-        } catch (e) {
-            toast('OCR 识别失败: ' + (e.message || '请确保本地服务已启动'), 'error');
-            openUpload(); // 回到上传模式
-        }
+        // 1. 获取百度 token
+        var token = await getBaiduToken();
+
+        // 2. 调百度 OCR
+        var formData = 'image=' + encodeURIComponent(rawBase64) + '&detect_direction=false&paragraph=false';
+        var res = await fetch('https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic?access_token=' + token, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData,
+        });
+        var ocrData = await res.json();
+        if (ocrData.error_code) throw new Error(ocrData.error_msg || ('错误码:' + ocrData.error_code));
+
+        // 3. 拼接文本
+        var words = (ocrData.words_result || []).map(function (w) { return w.words; });
+        var ocrText = words.join('\n');
+
+        // 4. 提取字段
+        var patientInfo = extractPatientInfo(ocrText);
+        var visitInfo = extractVisitInfo(ocrText);
+        var rawIndicators = extractIndicators(ocrText);
+
+        // 5. 模糊匹配
+        var refData = await loadReferenceData();
+        var matchedIndicators = rawIndicators.map(function (ind) {
+            var result = matchIndicator(ind.name, refData);
+            return {
+                raw_name: ind.name,
+                raw_value: ind.value,
+                raw_reference: ind.reference,
+                matched: result.match && result.score >= 0.4 ? result.match : null,
+                confidence: Math.round(result.score * 100),
+                confidence_level: result.score >= 0.7 ? 'high' : result.score >= 0.4 ? 'medium' : 'low',
+            };
+        });
+
+        ocrResult = {
+            raw_text: ocrText,
+            patient: patientInfo,
+            visit: visitInfo,
+            indicators: matchedIndicators,
+        };
+
+        renderResult();
+        btnConfirm.style.display = '';
+        toast('识别完成！请核对并修改数据后保存', 'success');
+    } catch (e) {
+        toast('OCR 识别失败: ' + (e.message || '未知错误'), 'error');
+        openUpload();
+    }
     }
 
     /** 渲染识别结果编辑界面 */
