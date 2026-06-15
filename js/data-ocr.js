@@ -100,6 +100,11 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ image: base64 }),
             });
+            // 检查响应是否为 JSON（静态托管下 API 不可用会返回 HTML）
+            var contentType = res.headers.get('content-type') || '';
+            if (!res.ok || contentType.indexOf('application/json') === -1) {
+                throw new Error('OCR 服务不可用，请本地运行 node server.js');
+            }
             var json = await res.json();
             if (!json.success) throw new Error(json.message);
 
