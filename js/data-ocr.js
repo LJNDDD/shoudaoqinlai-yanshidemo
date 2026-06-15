@@ -132,6 +132,63 @@
         return referenceCache;
     }
 
+    var currentMode = 'upload';
+
+    /** 打开 OCR 抽屉 — 上传模式 */
+    function openUpload() {
+        currentMode = 'upload';
+        ocrResult = null;
+        btnConfirm.style.display = 'none';
+
+        body.innerHTML = (
+            '<div class="ocr-upload-area" id="ocrDropZone">' +
+                '<i class="fas fa-cloud-upload-alt" style="font-size:3rem;color:#1661AB;opacity:0.4;"></i>' +
+                '<p style="margin-top:1rem;font-size:0.9rem;color:#5B7A9A;">拖拽图片到此处 或 点击选择</p>' +
+                '<p style="font-size:0.7rem;color:#8BA5C0;margin-top:0.3rem;">支持 JPG / PNG，检验报告单照片</p>' +
+                '<input type="file" id="ocrFileInput" accept="image/*" style="display:none;">' +
+                '<button class="btn btn-primary" id="btnOcrSelect" style="margin-top:1rem;">选择图片</button>' +
+            '</div>' +
+            '<div id="ocrLoading" style="display:none;text-align:center;padding:2rem;">' +
+                '<i class="fas fa-spinner fa-spin" style="font-size:2rem;color:#1661AB;"></i>' +
+                '<p style="margin-top:1rem;color:#5B7A9A;">正在识别中...</p>' +
+                '<p style="font-size:0.7rem;color:#8BA5C0;" id="ocrProgress"></p>' +
+            '</div>'
+        );
+
+        overlay.classList.add('show');
+
+        var dropZone = document.getElementById('ocrDropZone');
+        var fileInput = document.getElementById('ocrFileInput');
+        var btnSelect = document.getElementById('btnOcrSelect');
+
+        btnSelect.addEventListener('click', function () { fileInput.click(); });
+        fileInput.addEventListener('change', function () { if (this.files[0]) handleFile(this.files[0]); });
+        dropZone.addEventListener('click', function () { fileInput.click(); });
+        dropZone.addEventListener('dragover', function (e) { e.preventDefault(); this.style.borderColor = '#1661AB'; });
+        dropZone.addEventListener('dragleave', function (e) { this.style.borderColor = ''; });
+        dropZone.addEventListener('drop', function (e) {
+            e.preventDefault(); this.style.borderColor = '';
+            if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+        });
+    }
+
+    /** 处理文件上传 */
+    function handleFile(file) {
+        if (!file.type.match(/image\//)) { toast('请选择图片文件', 'error'); return; }
+        var dropZone = document.getElementById('ocrDropZone');
+        var loadingEl = document.getElementById('ocrLoading');
+        var progressEl = document.getElementById('ocrProgress');
+        dropZone.style.display = 'none';
+        loadingEl.style.display = 'block';
+        progressEl.textContent = '正在上传...';
+        var reader = new FileReader();
+        reader.onload = function () {
+            progressEl.textContent = '正在 OCR 识别中...';
+            recognizeImage(reader.result);
+        };
+        reader.readAsDataURL(file);
+    }
+
     /** 调用 OCR + 解析 + 匹配（全前端完成） */
     async function recognizeImage(base64) {
         try {
