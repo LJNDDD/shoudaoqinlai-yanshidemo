@@ -68,6 +68,27 @@
     background: rgba(255,255,255,0.15);
 }
 
+.btn-header-ocr {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.btn-header-ocr:hover {
+    background: rgba(255,255,255,0.25);
+    border-color: rgba(255,255,255,0.5);
+}
+
 /* ---------- 三栏主体 ---------- */
 .data-main {
     display: flex;
@@ -1044,6 +1065,122 @@
 .push-summary strong {
     color: #1661AB;
 }
+
+/* ---------- OCR 识别 ---------- */
+.ocr-upload-area {
+    border: 2px dashed rgba(22,97,171,0.2);
+    border-radius: 12px;
+    padding: 2.5rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    background: #FAF9FA;
+}
+
+.ocr-upload-area:hover {
+    border-color: #1661AB;
+    background: rgba(22,97,171,0.02);
+}
+
+.ocr-section-title {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #1661AB;
+    margin: 1rem 0 0.5rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid rgba(22,97,171,0.12);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.ocr-form-row {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.ocr-table-wrap {
+    max-height: 360px;
+    overflow-y: auto;
+    border: 1px solid rgba(115,119,132,0.12);
+    border-radius: 8px;
+    margin-top: 0.3rem;
+}
+
+.ocr-table-wrap::-webkit-scrollbar { width: 4px; }
+.ocr-table-wrap::-webkit-scrollbar-thumb { background: #DFE3E8; border-radius: 10px; }
+
+.ocr-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.7rem;
+}
+
+.ocr-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.ocr-table thead th {
+    background: #F5F3F4;
+    padding: 0.4rem 0.4rem;
+    text-align: left;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #737784;
+    border-bottom: 1px solid rgba(115,119,132,0.1);
+}
+
+.ocr-table tbody td {
+    padding: 0.35rem 0.4rem;
+    border-bottom: 1px solid rgba(115,119,132,0.05);
+    vertical-align: middle;
+}
+
+.ocr-table tbody tr:hover { background: #FAF9FA; }
+
+.ocr-table input[type='text'] {
+    border: 1px solid transparent;
+    background: transparent;
+    font-size: 0.68rem;
+    font-family: inherit;
+    padding: 0.2rem 0.3rem;
+    border-radius: 4px;
+    outline: none;
+}
+
+.ocr-table input[type='text']:focus {
+    border-color: #1661AB;
+    background: #fff;
+    box-shadow: 0 0 0 2px rgba(22,97,171,0.1);
+}
+
+.ocr-table input[type='checkbox'] {
+    accent-color: #1661AB;
+    width: 13px;
+    height: 13px;
+    cursor: pointer;
+}
+
+.ocr-matched-name {
+    font-size: 0.65rem;
+    color: #5B7A9A;
+}
+
+.ocr-conf-badge {
+    font-size: 0.6rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.ocr-conf-high { background: #EBF7EE; color: #3AAA35; }
+.ocr-conf-medium { background: #FFF8E1; color: #E67E22; }
+.ocr-conf-low { background: #FFDAD6; color: #BA1A1A; }
 
 /* ---------- 响应式 ---------- */
 @media (max-width: 1100px) {

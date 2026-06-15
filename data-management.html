@@ -19,12 +19,15 @@
     <!-- ========== 顶部标题栏 ========== -->
     <header class="data-header">
         <div class="header-left">
-            <h1>手到擒来演示数据平台</h1>
-        </div>
-        <div class="header-right">
             <a href="/" class="btn-back">
                 <i class="fas fa-arrow-left"></i> 返回产品中心
             </a>
+            <h1>手到擒来演示数据平台</h1>
+        </div>
+        <div class="header-right">
+            <button class="btn-header-ocr" id="btnOcrEntry">
+                <i class="fas fa-scan"></i> OCR 识别报告
+            </button>
         </div>
     </header>
 
@@ -131,6 +134,25 @@
         </div>
     </div>
 
+    <!-- ========== OCR 识别抽屉 ========== -->
+    <div class="drawer-overlay" id="ocrOverlay">
+        <div class="drawer-panel">
+            <div class="drawer-header">
+                <h3><i class="fas fa-scan" style="color:#1661AB;"></i> OCR 识别检验报告</h3>
+                <button class="btn-close" id="btnOcrClose"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="drawer-body" id="ocrBody">
+                <!-- 由 data-ocr.js 动态渲染 -->
+            </div>
+            <div class="drawer-footer">
+                <button class="btn btn-cancel" id="btnOcrCancel">取消</button>
+                <button class="btn btn-primary" id="btnOcrConfirm" style="display:none;">
+                    <i class="fas fa-check"></i> 确认保存
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- ========== Toast 容器 ========== -->
     <div class="toast-container" id="toastContainer"></div>
 
@@ -140,6 +162,7 @@
     <script src="js/data-patient.js"></script>
     <script src="js/data-visit.js"></script>
     <script src="js/data-exam.js"></script>
+    <script src="js/data-ocr.js"></script>
 
 </body>
 </html>

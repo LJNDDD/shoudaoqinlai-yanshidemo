@@ -1,3 +1,5 @@
 node_modules/
 .DS_Store
 Thumbs.db
+*.traineddata
+测试报告.png

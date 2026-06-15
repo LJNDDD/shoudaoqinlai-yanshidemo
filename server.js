@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const initSqlJs = require('sql.js');
+const Tesseract = require('tesseract.js');
 
 const PORT = 3000;
 const ROOT = __dirname;
@@ -248,6 +249,61 @@ async function handleAPI(req, res, method, pathParts) {
             }
         }
 
+        // === OCR 识别 API ===
+        if (pathParts[1] === 'ocr' && pathParts[2] === 'recognize' && method === 'POST') {
+            const body = await parseBody(req);
+            if (!body.image) return sendJSON(res, 400, { success: false, message: '缺少图片数据' });
+
+            try {
+                // base64 解码
+                const base64 = body.image.replace(/^data:image\/\w+;base64,/, '');
+                const imgBuffer = Buffer.from(base64, 'base64');
+
+                // 写临时文件
+                const tmpPath = path.join(ROOT, 'mock-data', '_ocr_tmp.png');
+                fs.writeFileSync(tmpPath, imgBuffer);
+
+                // OCR 识别
+                const { data: { text } } = await Tesseract.recognize(tmpPath, 'chi_sim+eng');
+
+                // 清理临时文件
+                try { fs.unlinkSync(tmpPath); } catch (e) { /* ignore */ }
+
+                // 提取字段
+                const patientInfo = extractPatientInfo(text);
+                const visitInfo = extractVisitInfo(text);
+                const rawIndicators = extractIndicators(text);
+
+                // 从 reference_data 模糊匹配
+                const refData = queryAll('SELECT exam_item_code, exam_item_name, indicator_code, indicator_name FROM reference_data');
+                const matchedIndicators = rawIndicators.map(ind => {
+                    const { match, score } = matchIndicator(ind.name, refData);
+                    return {
+                        raw_name: ind.name,
+                        raw_value: ind.value,
+                        raw_reference: ind.reference,
+                        matched: match && score >= 0.4 ? match : null,
+                        confidence: Math.round(score * 100),
+                        confidence_level: score >= 0.7 ? 'high' : score >= 0.4 ? 'medium' : 'low',
+                    };
+                });
+
+                return sendJSON(res, 200, {
+                    success: true,
+                    data: {
+                        raw_text: text,
+                        patient: patientInfo,
+                        visit: visitInfo,
+                        indicators: matchedIndicators,
+                    },
+                });
+
+            } catch (ocrErr) {
+                console.error('OCR Error:', ocrErr);
+                return sendJSON(res, 500, { success: false, message: 'OCR识别失败: ' + ocrErr.message });
+            }
+        }
+
         // === 参考数据 API（假数据.xlsx） ===
         if (pathParts[1] === 'reference') {
             if (pathParts[2] === 'exam-items' && method === 'GET') {
@@ -269,6 +325,75 @@ async function handleAPI(req, res, method, pathParts) {
         console.error('API Error:', err);
         sendJSON(res, 500, { success: false, message: err.message || 'Internal Server Error' });
     }
+}
+
+// ========== OCR 辅助函数 ==========
+
+function levenshtein(a, b) {
+    const m = a.length, n = b.length;
+    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    for (let i = 0; i <= m; i++) dp[i][0] = i;
+    for (let j = 0; j <= n; j++) dp[0][j] = j;
+    for (let i = 1; i <= m; i++)
+        for (let j = 1; j <= n; j++)
+            dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] : Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]) + 1;
+    return dp[m][n];
+}
+
+function similarity(a, b) {
+    const maxLen = Math.max(a.length, b.length);
+    if (maxLen === 0) return 1;
+    return 1 - levenshtein(a, b) / maxLen;
+}
+
+function matchIndicator(ocrText, refData) {
+    let best = null, bestScore = 0;
+    const clean = ocrText.replace(/[（(].*?[)）]/g, '').replace(/\s+/g, '').replace(/[^一-龥a-zA-Z0-9]/g, '').toLowerCase();
+    for (const ref of refData) {
+        const refClean = ref.indicator_name.replace(/[（(].*?[)）]/g, '').replace(/\s+/g, '').replace(/[^一-龥a-zA-Z0-9]/g, '').toLowerCase();
+        let score = similarity(clean, refClean);
+        if (clean.includes(refClean) || refClean.includes(clean)) score = Math.max(score, 0.8);
+        if (score > bestScore) { bestScore = score; best = ref; }
+    }
+    return { match: best, score: bestScore };
+}
+
+function extractPatientInfo(text) {
+    const info = { name: '', gender: '', birthDate: '', age: '' };
+    const namePatterns = [/姓名[:：]\s*([^\n\r]+)/, /患者[:：]\s*([^\n\r]+)/, /姓名\s+([^\n\r]{2,4})/];
+    for (const p of namePatterns) { const m = text.match(p); if (m) { info.name = m[1].trim(); break; } }
+    const gm = text.match(/性别[:：]\s*(男|女)/);
+    if (gm) info.gender = gm[1];
+    const am = text.match(/年龄[:：]\s*(\d+)/);
+    if (am) info.age = am[1];
+    const bm = text.match(/(?:出生日期|生日)[:：]\s*(\d{4}[-\/.]\d{1,2}[-\/.]\d{1,2})/);
+    if (bm) info.birthDate = bm[1].replace(/[\/.]/g, '-');
+    return info;
+}
+
+function extractVisitInfo(text) {
+    const info = { visitTime: '', sampleNo: '', dept: '' };
+    const dm = text.match(/(?:检验日期|采样日期|送检日期|报告日期)[:：]\s*(\d{4}[-\/.]\d{1,2}[-\/.]\d{1,2})/);
+    if (dm) info.visitTime = dm[1].replace(/[\/.]/g, '-');
+    const sm = text.match(/(?:样本号|标本号|条码号|编号)[:：]\s*([^\n\r]+)/);
+    if (sm) info.sampleNo = sm[1].trim();
+    const depm = text.match(/(?:科室|送检科室|申请科室)[:：]\s*([^\n\r]+)/);
+    if (depm) info.dept = depm[1].trim();
+    return info;
+}
+
+function extractIndicators(text) {
+    const lines = text.split('\n');
+    const indicators = [];
+    const pattern = /([一-龥a-zA-Zβγδ()（）α]+?)\s+([\d.]+)\s+([<>\d.\-～~]+\s*\S*)/;
+    for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.length < 5) continue;
+        if (/^(检验|报告|项目|序号|编号|结果|参考|单位|正常|异常)/.test(trimmed)) continue;
+        const m = trimmed.match(pattern);
+        if (m) indicators.push({ name: m[1].trim(), value: m[2].trim(), reference: m[3].trim() });
+    }
+    return indicators;
 }
 
 // ========== 主服务器 ==========
