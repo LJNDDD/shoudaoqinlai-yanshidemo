@@ -2,7 +2,11 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const initSqlJs = require('sql.js');
-const Tesseract = require('tesseract.js');
+
+// ========== 百度 OCR 配置 ==========
+// 请填入你百度 AI 开放平台创建应用的参数
+const BAIDU_API_KEY = 'YOUR_BAIDU_API_KEY';        // ← 改成你的 API Key
+const BAIDU_SECRET_KEY = 'YOUR_BAIDU_SECRET_KEY';   // ← 改成你的 Secret Key
 
 const PORT = 3000;
 const ROOT = __dirname;
@@ -249,30 +253,59 @@ async function handleAPI(req, res, method, pathParts) {
             }
         }
 
-        // === OCR 识别 API ===
+        // === OCR 识别 API（百度 OCR） ===
         if (pathParts[1] === 'ocr' && pathParts[2] === 'recognize' && method === 'POST') {
             const body = await parseBody(req);
             if (!body.image) return sendJSON(res, 400, { success: false, message: '缺少图片数据' });
 
             try {
-                // base64 解码
                 const base64 = body.image.replace(/^data:image\/\w+;base64,/, '');
-                const imgBuffer = Buffer.from(base64, 'base64');
+                const https = require('https');
 
-                // 写临时文件
-                const tmpPath = path.join(ROOT, 'mock-data', '_ocr_tmp.png');
-                fs.writeFileSync(tmpPath, imgBuffer);
+                // 1. 获取 access_token
+                const tokenData = await new Promise((resolve, reject) => {
+                    const url = 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=' +
+                        encodeURIComponent(BAIDU_API_KEY) + '&client_secret=' + encodeURIComponent(BAIDU_SECRET_KEY);
+                    https.get(url, res => {
+                        let d = '';
+                        res.on('data', c => d += c);
+                        res.on('end', () => {
+                            try { resolve(JSON.parse(d)); } catch (e) { reject(new Error('获取token失败')); }
+                        });
+                    }).on('error', reject);
+                });
+                if (tokenData.error) throw new Error(tokenData.error_description || tokenData.error);
+                const accessToken = tokenData.access_token;
 
-                // OCR 识别
-                const { data: { text } } = await Tesseract.recognize(tmpPath, 'chi_sim+eng');
+                // 2. 调用通用文字识别
+                const ocrResult = await new Promise((resolve, reject) => {
+                    const postData = 'image=' + encodeURIComponent(base64) + '&detect_direction=false&paragraph=false';
+                    const hReq = https.request({
+                        hostname: 'aip.baidubce.com',
+                        path: '/rest/2.0/ocr/v1/general_basic?access_token=' + accessToken,
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': Buffer.byteLength(postData) },
+                    }, res => {
+                        let d = '';
+                        res.on('data', c => d += c);
+                        res.on('end', () => {
+                            try { resolve(JSON.parse(d)); } catch (e) { reject(new Error('解析OCR结果失败')); }
+                        });
+                    });
+                    hReq.on('error', reject);
+                    hReq.write(postData);
+                    hReq.end();
+                });
+                if (ocrResult.error_code) throw new Error(ocrResult.error_msg || ('错误码:' + ocrResult.error_code));
 
-                // 清理临时文件
-                try { fs.unlinkSync(tmpPath); } catch (e) { /* ignore */ }
+                // 拼接识别到的所有文字
+                const words = (ocrResult.words_result || []).map(w => w.words);
+                const ocrText = words.join('\n');
 
-                // 提取字段
-                const patientInfo = extractPatientInfo(text);
-                const visitInfo = extractVisitInfo(text);
-                const rawIndicators = extractIndicators(text);
+                // 提取字段（复用原有逻辑）
+                const patientInfo = extractPatientInfo(ocrText);
+                const visitInfo = extractVisitInfo(ocrText);
+                const rawIndicators = extractIndicators(ocrText);
 
                 // 从 reference_data 模糊匹配
                 const refData = queryAll('SELECT exam_item_code, exam_item_name, indicator_code, indicator_name FROM reference_data');
@@ -291,7 +324,7 @@ async function handleAPI(req, res, method, pathParts) {
                 return sendJSON(res, 200, {
                     success: true,
                     data: {
-                        raw_text: text,
+                        raw_text: ocrText,
                         patient: patientInfo,
                         visit: visitInfo,
                         indicators: matchedIndicators,
@@ -360,20 +393,27 @@ function matchIndicator(ocrText, refData) {
 
 function extractPatientInfo(text) {
     const info = { name: '', gender: '', birthDate: '', age: '' };
+    // 姓名
     const namePatterns = [/姓名[:：]\s*([^\n\r]+)/, /患者[:：]\s*([^\n\r]+)/, /姓名\s+([^\n\r]{2,4})/];
     for (const p of namePatterns) { const m = text.match(p); if (m) { info.name = m[1].trim(); break; } }
+    // 性别
     const gm = text.match(/性别[:：]\s*(男|女)/);
     if (gm) info.gender = gm[1];
+    // 年龄
     const am = text.match(/年龄[:：]\s*(\d+)/);
     if (am) info.age = am[1];
+    // 出生日期
     const bm = text.match(/(?:出生日期|生日)[:：]\s*(\d{4}[-\/.]\d{1,2}[-\/.]\d{1,2})/);
     if (bm) info.birthDate = bm[1].replace(/[\/.]/g, '-');
+    // 临床诊断可作为备注
+    const diagM = text.match(/临床诊断[:：]\s*([^\n\r]+)/);
+    if (diagM && !info.name) info.name = '患者(' + diagM[1].trim() + ')';
     return info;
 }
 
 function extractVisitInfo(text) {
     const info = { visitTime: '', sampleNo: '', dept: '' };
-    const dm = text.match(/(?:检验日期|采样日期|送检日期|报告日期)[:：]\s*(\d{4}[-\/.]\d{1,2}[-\/.]\d{1,2})/);
+    const dm = text.match(/(?:检验日期|采样日期|送检日期|报告日期|接收时间)[:：]\s*(\d{4}[-\/.]\d{1,2}[-\/.]\d{1,2})/);
     if (dm) info.visitTime = dm[1].replace(/[\/.]/g, '-');
     const sm = text.match(/(?:样本号|标本号|条码号|编号)[:：]\s*([^\n\r]+)/);
     if (sm) info.sampleNo = sm[1].trim();
@@ -383,16 +423,51 @@ function extractVisitInfo(text) {
 }
 
 function extractIndicators(text) {
-    const lines = text.split('\n');
-    const indicators = [];
-    const pattern = /([一-龥a-zA-Zβγδ()（）α]+?)\s+([\d.]+)\s+([<>\d.\-～~]+\s*\S*)/;
-    for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed || trimmed.length < 5) continue;
-        if (/^(检验|报告|项目|序号|编号|结果|参考|单位|正常|异常)/.test(trimmed)) continue;
-        const m = trimmed.match(pattern);
-        if (m) indicators.push({ name: m[1].trim(), value: m[2].trim(), reference: m[3].trim() });
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+
+    // 跳过表头（项目名称/英文与方法/结果/单位/参考值 等）
+    let startIdx = 0;
+    for (let i = 0; i < lines.length; i++) {
+        if (/^(项目名称|英文与方法|结果|单位|参考值)/.test(lines[i])) {
+            // 找表头结束位置（5列表头可能跨3-5行）
+            let j = i + 1;
+            while (j < lines.length && lines[j].length < 15 && !/[.*\d]/.test(lines[j])) j++;
+            startIdx = j;
+            break;
+        }
     }
+
+    // 从数据行开始，每 5 行为一组：名称 / 方法 / 值 / 单位 / 参考值
+    const indicators = [];
+    // 匹配指标名：以数字序号或*开头，或包含中文
+    const namePattern = /^[\d.*]+|.*[一-龥]/;
+
+    for (let i = startIdx; i < lines.length - 3; i++) {
+        const line = lines[i];
+        // 跳过非指标名行（纯英文/数字/符号）
+        if (!namePattern.test(line)) continue;
+        if (/^(检验|报告|项目|序号|编号|结果|参考|单位|正常|异常|临床|接收|送检)/.test(line)) continue;
+
+        const name = line.replace(/^[\d.*\s]+/, '').trim(); // 去掉前面的序号和*
+        const methodLine = lines[i + 1] || '';
+        const value = lines[i + 2] || '';
+        const unit = lines[i + 3] || '';
+        const reference = lines[i + 4] || '';
+
+        // 值必须是数字
+        if (!/^[\d.]+$/.test(value)) continue;
+        // 参考值应该包含数字或符号
+        if (!/[\d.<>～~]/.test(reference)) continue;
+
+        indicators.push({
+            name: name,
+            value: unit ? value + ' ' + unit : value,
+            reference: reference,
+        });
+
+        i += 4; // 跳过已处理的行
+    }
+
     return indicators;
 }
 
