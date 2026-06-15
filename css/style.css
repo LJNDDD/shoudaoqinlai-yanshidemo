@@ -76,6 +76,62 @@ body {
     -webkit-background-clip: unset;
 }
 
+.hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.btn-nav {
+    background: transparent;
+    border: 1.5px solid rgba(22, 97, 171, 0.15);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #7A95AE;
+    font-size: 0.85rem;
+    transition: all 0.25s;
+    text-decoration: none;
+}
+
+.btn-nav:hover {
+    background: #1661AB;
+    border-color: #1661AB;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(22, 97, 171, 0.3);
+}
+
+.btn-settings {
+    background: transparent;
+    border: 1.5px solid rgba(22, 97, 171, 0.15);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #7A95AE;
+    font-size: 1rem;
+    transition: all 0.25s;
+    flex-shrink: 0;
+    align-self: flex-start;
+    margin-top: 0.15rem;
+}
+
+.btn-settings:hover {
+    background: #1661AB;
+    border-color: #1661AB;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(22, 97, 171, 0.3);
+    transform: rotate(30deg);
+}
+
 .brand .tagline {
     color: #5B7A9A;
     font-size: 0.78rem;

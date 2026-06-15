@@ -1,0 +1,37 @@
+[
+  {
+    "visit_serial_no": "VSN20260115001",
+    "patient_code": "P20260101",
+    "visit_time": "2026-01-15 08:30:00",
+    "created_at": "2026-01-15 08:32:00",
+    "status": 1
+  },
+  {
+    "visit_serial_no": "VSN20260120002",
+    "patient_code": "P20260101",
+    "visit_time": "2026-01-20 09:15:00",
+    "created_at": "2026-01-20 09:17:00",
+    "status": 1
+  },
+  {
+    "visit_serial_no": "VSN20260201003",
+    "patient_code": "P20260102",
+    "visit_time": "2026-02-01 10:00:00",
+    "created_at": "2026-02-01 10:03:00",
+    "status": 1
+  },
+  {
+    "visit_serial_no": "VSN20260210004",
+    "patient_code": "P20260103",
+    "visit_time": "2026-02-10 14:30:00",
+    "created_at": "2026-02-10 14:32:00",
+    "status": 1
+  },
+  {
+    "visit_serial_no": "VSN202606150001",
+    "patient_code": "P20260101",
+    "visit_time": "2026-06-15 00:59:20",
+    "created_at": "2026-06-15 00:59:20",
+    "status": 1
+  }
+]

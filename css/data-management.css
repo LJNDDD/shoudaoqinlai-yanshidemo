@@ -1,0 +1,1074 @@
+/* ============================================================
+   数据管理页 — 三栏布局样式
+   品牌色: #1661AB (深蓝)
+   ============================================================ */
+
+/* ---------- Reset ---------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ---------- 全屏布局 ---------- */
+.data-page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: #FAF9FA;
+    color: #1B1C1D;
+}
+
+/* ---------- 顶部栏 ---------- */
+.data-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 2rem;
+    background: #1661AB;
+    color: #fff;
+    flex-shrink: 0;
+    z-index: 50;
+}
+
+.data-header .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.data-header h1 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+}
+
+.data-header .header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.data-header .btn-back {
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: 20px;
+    transition: background 0.2s;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.data-header .btn-back:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+/* ---------- 三栏主体 ---------- */
+.data-main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ---------- 左侧：患者列表 ---------- */
+.patient-panel {
+    width: 300px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    background: #F5F3F4;
+    border-right: 1px solid rgba(115, 119, 132, 0.1);
+}
+
+.panel-header {
+    padding: 1rem 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.panel-header h2 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.btn-add {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #1661AB;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(22,97,171,0.3);
+}
+
+.btn-add:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 14px rgba(22,97,171,0.4);
+}
+
+.search-box {
+    margin: 0 1.2rem 0.6rem;
+    position: relative;
+}
+
+.search-box input {
+    width: 100%;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem 0.5rem 2rem;
+    font-size: 0.72rem;
+    line-height: 1.5;
+    background: #fff;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-box input:focus {
+    border-color: #1661AB;
+    box-shadow: 0 0 0 2px rgba(22,97,171,0.12);
+}
+
+.search-box .search-icon {
+    position: absolute;
+    left: 0.65rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8BA5C0;
+    font-size: 0.7rem;
+    pointer-events: none;
+}
+
+/* 患者列表项 */
+.patient-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 0.7rem 1rem;
+}
+
+.patient-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.patient-list::-webkit-scrollbar-thumb {
+    background: #DFE3E8;
+    border-radius: 10px;
+}
+
+.patient-item {
+    padding: 0.7rem 0.9rem;
+    border-radius: 10px;
+    margin-bottom: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.patient-item:hover {
+    background: #E9E8E9;
+}
+
+.patient-item.active {
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08), inset 0 0 0 2px #3366CC;
+    border-color: #3366CC;
+}
+
+.patient-item .patient-info .name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1661AB;
+}
+
+.patient-item .patient-info .meta {
+    font-size: 0.6rem;
+    color: #737784;
+    margin-top: 0.15rem;
+}
+
+.patient-item .patient-actions {
+    display: flex;
+    gap: 0.3rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.patient-item:hover .patient-actions {
+    opacity: 1;
+}
+
+.patient-item .btn-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 0.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    background: transparent;
+    color: #737784;
+}
+
+.patient-item .btn-icon:hover {
+    background: #E0E0E0;
+}
+
+.patient-item .btn-icon.btn-disable {
+    color: #BA1A1A;
+}
+
+.patient-item .btn-icon.btn-disable:hover {
+    background: #FFDAD6;
+}
+
+.patient-item.disabled .name {
+    color: #8BA5C0;
+    text-decoration: line-through;
+}
+
+/* ---------- 中间：就诊记录列表 ---------- */
+.visit-panel {
+    width: 280px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    background: #FAF9FA;
+    border-right: 1px solid rgba(115, 119, 132, 0.1);
+}
+
+.visit-panel .panel-subtitle {
+    font-size: 0.65rem;
+    color: #737784;
+    margin-top: 0.15rem;
+}
+
+.visit-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.6rem 0.8rem 1rem;
+}
+
+.visit-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.visit-list::-webkit-scrollbar-thumb {
+    background: #DFE3E8;
+    border-radius: 10px;
+}
+
+.visit-card {
+    background: #fff;
+    border: 1px solid rgba(115, 119, 132, 0.1);
+    border-radius: 10px;
+    padding: 0.8rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.visit-card:hover {
+    border-color: rgba(51, 102, 204, 0.15);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.visit-card.active {
+    border-color: #3366CC;
+    background: rgba(231, 235, 255, 0.15);
+    box-shadow: 0 0 0 1px #3366CC;
+}
+
+.visit-card .visit-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.72rem;
+}
+
+.visit-card .visit-row + .visit-row {
+    margin-top: 0.3rem;
+}
+
+.visit-card .visit-label {
+    color: #737784;
+    font-size: 0.6rem;
+}
+
+.visit-card .visit-value {
+    font-weight: 600;
+    font-size: 0.72rem;
+}
+
+.visit-card .visit-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.visit-card .visit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.25rem;
+    margin-top: 0.4rem;
+    padding-top: 0.35rem;
+    border-top: 1px solid rgba(115,119,132,0.08);
+}
+
+.visit-card .btn-icon-sm {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.05);
+    color: #737784;
+    transition: all 0.2s;
+}
+
+.visit-card .btn-icon-sm:hover {
+    background: #E0E0E0;
+}
+
+.visit-card .btn-icon-sm.btn-disable {
+    color: #BA1A1A;
+}
+
+.visit-card .btn-icon-sm.btn-disable:hover {
+    background: #FFDAD6;
+}
+
+.visit-card.disabled {
+    opacity: 0.5;
+}
+
+/* ---------- 右侧：检查明细 ---------- */
+.exam-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    overflow: hidden;
+}
+
+.exam-panel .panel-header {
+    border-bottom: 1px solid rgba(115, 119, 132, 0.1);
+}
+
+.exam-panel .panel-header .btn-add-text {
+    padding: 0.35rem 0.8rem;
+    border-radius: 20px;
+    border: 1px solid #1661AB;
+    background: transparent;
+    color: #1661AB;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.exam-panel .panel-header .btn-add-text:hover {
+    background: #1661AB;
+    color: #fff;
+}
+
+.exam-panel .panel-header .btn-add-text.btn-push:hover {
+    background: #27AE60;
+    color: #fff;
+}
+
+/* 检查项目导航条 */
+.exam-nav {
+    display: flex;
+    gap: 0.35rem;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid rgba(115, 119, 132, 0.1);
+    background: #FAF9FA;
+    overflow-x: auto;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+
+.exam-nav::-webkit-scrollbar {
+    height: 3px;
+}
+
+.exam-nav::-webkit-scrollbar-thumb {
+    background: #DFE3E8;
+    border-radius: 10px;
+}
+
+.exam-nav-btn {
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    border: 1px solid rgba(115, 119, 132, 0.15);
+    background: #fff;
+    color: #5B7A9A;
+    font-size: 0.68rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.exam-nav-btn:hover {
+    border-color: #1661AB;
+    color: #1661AB;
+    background: rgba(22, 97, 171, 0.05);
+}
+
+.exam-nav-btn.active {
+    background: #1661AB;
+    color: #fff;
+    border-color: #1661AB;
+}
+
+/* 检查项目分组标题 */
+.exam-section {
+    margin-bottom: 1rem;
+}
+
+.exam-section:last-child {
+    margin-bottom: 0;
+}
+
+.exam-section-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #1B2A3A;
+    padding: 0.5rem 0;
+    margin-bottom: 0.3rem;
+    border-bottom: 2px solid #1661AB;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.exam-section-title i {
+    color: #1661AB;
+    font-size: 0.7rem;
+}
+
+.exam-section-code {
+    font-size: 0.62rem;
+    font-weight: 400;
+    color: #8BA5C0;
+}
+
+/* 调整内容的 padding */
+.exam-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.8rem 1rem;
+}
+
+.exam-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.exam-content::-webkit-scrollbar-thumb {
+    background: #DFE3E8;
+    border-radius: 10px;
+}
+
+.exam-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #8BA5C0;
+    font-size: 0.85rem;
+    gap: 0.6rem;
+}
+
+.exam-empty i {
+    font-size: 3rem;
+    opacity: 0.3;
+}
+
+/* 检查明细表格 */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.72rem;
+}
+
+.data-table thead th {
+    background: #F5F3F4;
+    padding: 0.6rem 0.5rem;
+    text-align: left;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #737784;
+    border-bottom: 1px solid rgba(115, 119, 132, 0.1);
+}
+
+.data-table tbody td {
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid rgba(115, 119, 132, 0.06);
+}
+
+.data-table tbody tr:hover {
+    background: #F5F3F4;
+}
+
+.data-table tbody tr.abnormal {
+    background: rgba(255, 218, 214, 0.3);
+}
+
+.data-table tbody tr.abnormal:hover {
+    background: rgba(255, 218, 214, 0.5);
+}
+
+.data-table .exam-result-normal {
+    color: #27AE60;
+    font-weight: 700;
+}
+
+.data-table .exam-result-abnormal {
+    color: #BA1A1A;
+    font-weight: 700;
+}
+
+.data-table .row-actions {
+    display: flex;
+    gap: 0.25rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.data-table tbody tr:hover .row-actions {
+    opacity: 1;
+}
+
+.data-table .row-actions .btn-icon-xs {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.05);
+    color: #737784;
+    transition: all 0.2s;
+}
+
+.data-table .row-actions .btn-icon-xs:hover {
+    background: #E0E0E0;
+}
+
+.data-table .row-actions .btn-icon-xs.btn-disable {
+    color: #BA1A1A;
+}
+
+.data-table .row-actions .btn-icon-xs.btn-disable:hover {
+    background: #FFDAD6;
+}
+
+.data-table tbody tr.disabled {
+    opacity: 0.45;
+}
+
+/* ---------- 状态徽章 ---------- */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.55rem;
+    font-weight: 600;
+}
+
+.status-badge.active {
+    background: #EBF7EE;
+    color: #3AAA35;
+}
+
+.status-badge.disabled {
+    background: #F0F0F0;
+    color: #8BA5C0;
+}
+
+.status-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-dot.active {
+    background: #3AAA35;
+}
+
+.status-dot.disabled {
+    background: #8BA5C0;
+}
+
+/* ---------- 模态弹窗 ---------- */
+/* ---------- 右侧抽屉 ---------- */
+.drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+.drawer-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.drawer-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 480px;
+    max-width: 92vw;
+    height: 100vh;
+    background: #fff;
+    box-shadow: -8px 0 30px rgba(0,0,0,0.12);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 101;
+}
+
+.drawer-overlay.show .drawer-panel {
+    transform: translateX(0);
+}
+
+.drawer-panel::-webkit-scrollbar {
+    width: 4px;
+}
+
+.drawer-panel::-webkit-scrollbar-thumb {
+    background: #DFE3E8;
+    border-radius: 10px;
+}
+
+.drawer-header {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid rgba(115, 119, 132, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    background: #fff;
+}
+
+.drawer-header h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.drawer-header .btn-close {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,0.05);
+    cursor: pointer;
+    color: #737784;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.drawer-header .btn-close:hover {
+    background: #E0E0E0;
+    color: #1B1C1D;
+}
+
+.drawer-body {
+    padding: 1rem 1.2rem;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.drawer-footer {
+    padding: 0.8rem 1.2rem;
+    border-top: 1px solid rgba(115, 119, 132, 0.1);
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    flex-shrink: 0;
+    background: #fff;
+}
+
+/* 表单 */
+.form-group {
+    margin-bottom: 0.8rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #5B7A9A;
+    margin-bottom: 0.3rem;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.45rem 0.7rem;
+    border: 1px solid #DFE3E8;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-family: inherit;
+    color: #1B1C1D;
+    background: #FAF9FA;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #1661AB;
+    box-shadow: 0 0 0 2px rgba(22,97,171,0.12);
+    background: #fff;
+}
+
+.btn {
+    padding: 0.45rem 1.2rem;
+    border-radius: 20px;
+    border: none;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: #1661AB;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #0F4A85;
+    box-shadow: 0 4px 12px rgba(22,97,171,0.3);
+}
+
+.btn-cancel {
+    background: #F0F0F0;
+    color: #5B7A9A;
+}
+
+.btn-cancel:hover {
+    background: #E0E0E0;
+}
+
+/* ---------- Toast 通知 ---------- */
+.toast-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.toast {
+    padding: 0.7rem 1.1rem;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    animation: toastIn 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 200px;
+}
+
+.toast.success {
+    background: #EBF7EE;
+    color: #3AAA35;
+    border: 1px solid rgba(58,170,53,0.2);
+}
+
+.toast.error {
+    background: #FFDAD6;
+    color: #BA1A1A;
+    border: 1px solid rgba(186,26,26,0.2);
+}
+
+.toast.fade-out {
+    animation: toastOut 0.3s ease-out forwards;
+}
+
+@keyframes toastIn {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes toastOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(30px); }
+}
+
+/* ---------- 推送数据列表 ---------- */
+.push-section {
+    margin-bottom: 1rem;
+}
+
+.push-section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #1B2A3A;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.push-section-title i {
+    color: #27AE60;
+    font-size: 0.65rem;
+}
+
+.push-client-group {
+    display: flex;
+    gap: 0.6rem;
+    margin-bottom: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.push-client-option {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    border: 1.5px solid rgba(115,119,132,0.2);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #5B7A9A;
+    user-select: none;
+}
+
+.push-client-option:hover {
+    border-color: #27AE60;
+    color: #27AE60;
+}
+
+.push-client-option.checked {
+    border-color: #27AE60;
+    background: rgba(39,174,96,0.06);
+    color: #27AE60;
+    font-weight: 600;
+}
+
+.push-client-option input {
+    display: none;
+}
+
+.push-select-all {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    color: #1661AB;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+    user-select: none;
+}
+
+.push-tabs {
+    display: flex;
+    gap: 0.35rem;
+    margin-bottom: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.push-tab-btn {
+    padding: 0.3rem 0.65rem;
+    border-radius: 8px;
+    border: 1px solid rgba(115,119,132,0.2);
+    background: #fff;
+    color: #5B7A9A;
+    font-size: 0.65rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    line-height: 1.3;
+    text-align: center;
+}
+
+.push-tab-btn:hover {
+    border-color: #1661AB;
+    color: #1661AB;
+}
+
+.push-tab-btn.active {
+    background: #1661AB;
+    color: #fff;
+    border-color: #1661AB;
+}
+
+.push-tab-btn small {
+    font-size: 0.55rem;
+    opacity: 0.7;
+}
+
+.push-list {
+    max-height: 320px;
+    overflow-y: auto;
+    border: 1px solid rgba(115,119,132,0.12);
+    border-radius: 8px;
+}
+
+.push-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.push-list::-webkit-scrollbar-thumb {
+    background: #DFE3E8;
+    border-radius: 10px;
+}
+
+.push-list-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.7rem;
+    border-bottom: 1px solid rgba(115,119,132,0.06);
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 0.72rem;
+    user-select: none;
+}
+
+.push-list-item:last-child {
+    border-bottom: none;
+}
+
+.push-list-item:hover {
+    background: #F5F3F4;
+}
+
+.push-list-item input[type='checkbox'] {
+    accent-color: #1661AB;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.push-item-name {
+    flex: 1;
+    font-weight: 500;
+}
+
+.push-item-value {
+    color: #737784;
+    font-size: 0.65rem;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.push-item-result {
+    font-size: 0.6rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 10px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.push-item-result.normal {
+    background: #EBF7EE;
+    color: #3AAA35;
+}
+
+.push-item-result.abnormal {
+    background: #FFDAD6;
+    color: #BA1A1A;
+}
+
+.push-summary {
+    font-size: 0.7rem;
+    color: #5B7A9A;
+    margin-top: 0.6rem;
+    padding: 0.5rem;
+    background: #F5F3F4;
+    border-radius: 8px;
+}
+
+.push-summary strong {
+    color: #1661AB;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 1100px) {
+    .patient-panel { width: 240px; }
+    .visit-panel { width: 240px; }
+}
+
+@media (max-width: 860px) {
+    .data-main {
+        flex-direction: column;
+    }
+    .patient-panel { width: 100%; max-height: 200px; }
+    .visit-panel { width: 100%; max-height: 200px; }
+    .exam-panel { flex: 1; }
+}
+
+@media (max-width: 540px) {
+    .data-header {
+        padding: 0.5rem 0.8rem;
+    }
+    .data-header h1 {
+        font-size: 0.95rem;
+    }
+    .drawer-panel {
+        width: 100%;
+        max-width: 100vw;
+    }
+}

@@ -1,0 +1,5 @@
+[
+  { "patient_code": "P20260101", "patient_name": "张三", "gender": "男", "birth_date": "1985-06-15", "created_at": "2026-01-10 09:30:00", "status": 1 },
+  { "patient_code": "P20260102", "patient_name": "李丽", "gender": "女", "birth_date": "1990-03-22", "created_at": "2026-01-12 14:20:00", "status": 1 },
+  { "patient_code": "P20260103", "patient_name": "王伟", "gender": "男", "birth_date": "1978-11-08", "created_at": "2026-02-03 10:15:00", "status": 1 }
+]

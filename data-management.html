@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据管理 — 手到擒来</title>
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600&family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- 样式 -->
+    <link rel="stylesheet" href="css/data-management.css">
+</head>
+<body class="data-page">
+
+    <!-- ========== 顶部标题栏 ========== -->
+    <header class="data-header">
+        <div class="header-left">
+            <h1>手到擒来演示数据平台</h1>
+        </div>
+        <div class="header-right">
+            <a href="/" class="btn-back">
+                <i class="fas fa-arrow-left"></i> 返回产品中心
+            </a>
+        </div>
+    </header>
+
+    <!-- ========== 三栏主体 ========== -->
+    <main class="data-main">
+
+        <!-- 左侧：患者列表 -->
+        <aside class="patient-panel" id="patientPanel">
+            <div class="panel-header">
+                <h2>患者列表</h2>
+                <button class="btn-add" id="btnAddPatient" title="新增患者">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="patientSearch" placeholder="搜索/过滤...">
+            </div>
+            <div class="patient-list" id="patientList">
+                <!-- 由 data-patient.js 动态渲染 -->
+            </div>
+        </aside>
+
+        <!-- 中间：就诊记录列表 -->
+        <section class="visit-panel" id="visitPanel">
+            <div class="panel-header">
+                <div>
+                    <h2 id="visitTitle">就诊记录</h2>
+                    <p class="panel-subtitle" id="visitSubtitle">请选择患者</p>
+                </div>
+                <button class="btn-add" id="btnAddVisit" title="新增就诊" disabled>
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div class="visit-list" id="visitList">
+                <!-- 由 data-visit.js 动态渲染 -->
+            </div>
+        </section>
+
+        <!-- 右侧：检查明细 -->
+        <aside class="exam-panel" id="examPanel">
+            <div class="panel-header">
+                <div>
+                    <h2 id="examTitle">检验检查结果</h2>
+                    <p class="panel-subtitle" id="examSubtitle">请选择就诊记录</p>
+                </div>
+                <div style="display:flex;gap:0.4rem;">
+                    <button class="btn-add-text" id="btnPushData" disabled style="border-color:#27AE60;color:#27AE60;">
+                        <i class="fas fa-paper-plane"></i> 推送数据
+                    </button>
+                    <button class="btn-add-text" id="btnAddExam" disabled>
+                        <i class="fas fa-plus"></i> 新增
+                    </button>
+                </div>
+            </div>
+            <div class="exam-nav" id="examNav" style="display:none;"></div>
+            <div class="exam-content" id="examContent">
+                <div class="exam-empty">
+                    <i class="fas fa-microscope"></i>
+                    <span>请选择就诊记录查看明细</span>
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
+    <!-- ========== 模态弹窗占位 ========== -->
+    <div class="drawer-overlay" id="drawerOverlay">
+        <div class="drawer-panel" id="drawerPanel">
+            <div class="drawer-header">
+                <h3 id="drawerTitle">表单</h3>
+                <button class="btn-close" id="btnDrawerClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="drawer-body" id="drawerBody">
+                <!-- 由 data-modal.js 动态渲染 -->
+            </div>
+            <div class="drawer-footer" id="drawerFooter">
+                <button class="btn btn-cancel" id="btnDrawerCancel">取消</button>
+                <button class="btn btn-primary" id="btnDrawerSubmit">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 推送数据抽屉 ========== -->
+    <div class="drawer-overlay" id="pushOverlay">
+        <div class="drawer-panel" id="pushPanel">
+            <div class="drawer-header">
+                <h3><i class="fas fa-paper-plane" style="color:#27AE60;"></i> 推送数据</h3>
+                <button class="btn-close" id="btnPushClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="drawer-body" id="pushBody">
+                <!-- 由 JS 动态渲染 -->
+            </div>
+            <div class="drawer-footer">
+                <button class="btn btn-cancel" id="btnPushCancel">取消</button>
+                <button class="btn btn-primary" id="btnPushConfirm" style="background:#27AE60;">
+                    <i class="fas fa-paper-plane"></i> 确认推送
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== Toast 容器 ========== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- JS 模块（按依赖顺序加载） -->
+    <script src="js/data-api.js"></script>
+    <script src="js/data-modal.js"></script>
+    <script src="js/data-patient.js"></script>
+    <script src="js/data-visit.js"></script>
+    <script src="js/data-exam.js"></script>
+
+</body>
+</html>
