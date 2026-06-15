@@ -1,0 +1,897 @@
+[
+  {
+    "exam_item_code": "URINE_REXA24",
+    "exam_item_name": "24小时尿液检查",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "CTE01007",
+    "exam_item_name": "CT平扫-冠脉",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "CTE01010",
+    "exam_item_name": "CT平扫-四肢",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "CTE01006",
+    "exam_item_name": "CT平扫-头颅",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "CTE01009",
+    "exam_item_name": "CT平扫-盆腔",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "CTE01004",
+    "exam_item_name": "CT平扫-胸部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "CTE01008",
+    "exam_item_name": "CT平扫-腰骶部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "CTE01001",
+    "exam_item_name": "CT平扫-腹部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "CTE01005",
+    "exam_item_name": "CT平扫-颈部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "EYE01005",
+    "exam_item_name": "OCT检查",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "IHC_PKI",
+    "exam_item_name": "P16/KI67免疫细胞化学双染",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "PCT01001",
+    "exam_item_name": "PET-CT-头颅",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "PMR01003",
+    "exam_item_name": "PET/MR节段性显像-盆部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "PMR01004",
+    "exam_item_name": "PET/MR节段性显像-胸部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "PMR01001",
+    "exam_item_name": "PET/MR节段性显像-腹部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "PMR01002",
+    "exam_item_name": "PET/MR节段性显像-颈部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XRA01001",
+    "exam_item_name": "X射线检查（平片）",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XRA01002",
+    "exam_item_name": "X线检查（钡餐造影检查）",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XRA01003",
+    "exam_item_name": "X线检查（骨密度测定）",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XCTE01004",
+    "exam_item_name": "X线计算机体层(CT)增强扫描-四肢",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XCTE01001",
+    "exam_item_name": "X线计算机体层(CT)增强扫描-头颅",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XCTE01005",
+    "exam_item_name": "X线计算机体层(CT)增强扫描-盆腔",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XCTE01002",
+    "exam_item_name": "X线计算机体层(CT)增强扫描-胸部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XCTE01003",
+    "exam_item_name": "X线计算机体层(CT)增强扫描-腰骶部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XCTE01007",
+    "exam_item_name": "X线计算机体层(CT)增强扫描-腹部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XCTE01006",
+    "exam_item_name": "X线计算机体层(CT)增强扫描-颈部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XRA02006",
+    "exam_item_name": "X线造影-四肢",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XRA02008",
+    "exam_item_name": "X线造影-外生殖器",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XRA02001",
+    "exam_item_name": "X线造影-头颅",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XRA02005",
+    "exam_item_name": "X线造影-盆腔",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XRA02002",
+    "exam_item_name": "X线造影-胸部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XRA02007",
+    "exam_item_name": "X线造影-腰部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XRA02003",
+    "exam_item_name": "X线造影-腹部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XRA02004",
+    "exam_item_name": "X线造影-颈部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "GPE01001",
+    "exam_item_name": "一般检查",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "GPE01008",
+    "exam_item_name": "一般检查-四肢",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "GPE01003",
+    "exam_item_name": "一般检查-气管",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "GPE01009",
+    "exam_item_name": "一般检查-眼",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "GPE01004",
+    "exam_item_name": "一般检查-胸部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "GPE01007",
+    "exam_item_name": "一般检查-脊柱",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "GPE01005",
+    "exam_item_name": "一般检查-腹部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "GPE01002",
+    "exam_item_name": "一般检查-颈",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "IMMU_TEST",
+    "exam_item_name": "临床免疫学检验",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "GYN01002",
+    "exam_item_name": "乳房视诊",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "GYN01003",
+    "exam_item_name": "乳房触诊",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "FUL01001",
+    "exam_item_name": "乳腺全容积成像",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "MAM01001",
+    "exam_item_name": "乳腺钼靶摄片",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "HPV",
+    "exam_item_name": "人乳头瘤病毒检查",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "BODY_COMP",
+    "exam_item_name": "人体成分分析",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "BODY_GREA",
+    "exam_item_name": "体脂测定",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "SRH01001",
+    "exam_item_name": "健康自评",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "CDNA01001",
+    "exam_item_name": "全自动DNA宫颈细胞检测",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "BIOC_ITEM",
+    "exam_item_name": "其他生化项目",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "ULT05001",
+    "exam_item_name": "内镜超声",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "BlOOD_COAG",
+    "exam_item_name": "凝血功能",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "DOS01001",
+    "exam_item_name": "口腔检查",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "BHH01001",
+    "exam_item_name": "吸烟饮酒史",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "SUR01001",
+    "exam_item_name": "外科检查",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "ULT04001",
+    "exam_item_name": "多普勒超声",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "STOOL_REXA",
+    "exam_item_name": "大便常规",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "GYN01001",
+    "exam_item_name": "妇科检查",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "PMH01002",
+    "exam_item_name": "妇科病史",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "FHH01001",
+    "exam_item_name": "家族史",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "PARA_TEST",
+    "exam_item_name": "寄生虫检查",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "URINE_REXA",
+    "exam_item_name": "尿常规",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "URINE_REXAW",
+    "exam_item_name": "尿微量蛋白检测",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "URINE_SEDI",
+    "exam_item_name": "尿沉渣",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "URINE_TOXIC",
+    "exam_item_name": "尿液毒化学物测定",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "ULT01001",
+    "exam_item_name": "常规超声检查",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "EYE01007",
+    "exam_item_name": "干眼检查",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "OSA01002",
+    "exam_item_name": "床边睡眠呼吸监测",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "TRACE_ELEM",
+    "exam_item_name": "微量元素报告",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "CAR01001",
+    "exam_item_name": "心电图检查",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "MYOC_FUNC",
+    "exam_item_name": "心肌功能检查",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "GPE03001",
+    "exam_item_name": "心脏叩诊",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "GPE02001",
+    "exam_item_name": "心脏听诊",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "GPE03003",
+    "exam_item_name": "心脏触诊",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "INFECT_TEST",
+    "exam_item_name": "感染免疫学检测",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "INFECT_HIV",
+    "exam_item_name": "感染免疫学检测（HIV病毒）",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "INFECT_SAL",
+    "exam_item_name": "感染免疫学检测（伤寒沙门菌）",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "INFECT_PAR",
+    "exam_item_name": "感染免疫学检测（副伤寒沙门菌）",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "INFECT_COVID19",
+    "exam_item_name": "感染免疫学检测（新冠病毒）",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "INFECT_TP",
+    "exam_item_name": "感染免疫学检测（梅毒）",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "INFECT_FLU",
+    "exam_item_name": "感染免疫学检测（流感病毒）",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "INFECT_EV",
+    "exam_item_name": "感染免疫学检测（消化道病毒）",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "INFECT_HHV",
+    "exam_item_name": "感染免疫学检测（疱疹病毒）",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "INFECT_HEP",
+    "exam_item_name": "感染免疫学检测（病毒性肝炎）",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "INFECT_POLIO",
+    "exam_item_name": "感染免疫学检测（脊髓灰质炎）",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "ANTI_SPER",
+    "exam_item_name": "抗精子抗体检测",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "CHLA_TEST",
+    "exam_item_name": "支原体检查",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "PPLO_TEST",
+    "exam_item_name": "支原体检查",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "OSA01003",
+    "exam_item_name": "整夜多导睡眠监测",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "OSA01004",
+    "exam_item_name": "无创辅助通气压力滴定",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "PMH01001",
+    "exam_item_name": "既往病史",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "NITRO_BALANCE",
+    "exam_item_name": "氮平衡试验",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "TD001001",
+    "exam_item_name": "泪道内窥镜",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "FLOW_CYTO",
+    "exam_item_name": "流式细胞术检验",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "ULT01002",
+    "exam_item_name": "浅表器官超声检查",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "HORM_TEST",
+    "exam_item_name": "激素检查",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "HORM_SEX",
+    "exam_item_name": "激素检查（性激素）",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "HORM_VIT",
+    "exam_item_name": "激素检查（维生素）",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "HORM_PAN",
+    "exam_item_name": "激素检查（胰岛功能）",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "SPEC_PROT",
+    "exam_item_name": "特定蛋白",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "DHH01001",
+    "exam_item_name": "用药史",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "THYR_FUNC",
+    "exam_item_name": "甲状腺功能检查",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "STO02001",
+    "exam_item_name": "电子喉镜",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "STO03001",
+    "exam_item_name": "电子耳镜",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "EGD01001",
+    "exam_item_name": "电子胃镜检查",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "STO04001",
+    "exam_item_name": "电子鼻咽镜",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "EYE01003",
+    "exam_item_name": "电脑验光",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "PATH_DIAG",
+    "exam_item_name": "病理学检查",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "PFD01001",
+    "exam_item_name": "盆底肌筛查",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "EYE01004",
+    "exam_item_name": "眼底照相",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "EYE01001",
+    "exam_item_name": "眼科常规检查",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "OSA01001",
+    "exam_item_name": "睡眠呼吸过筛试验",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XMRI01004",
+    "exam_item_name": "磁共振增强成像-四肢",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XMRI01005",
+    "exam_item_name": "磁共振增强成像-头颅",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XMRI01003",
+    "exam_item_name": "磁共振增强成像-盆腔",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XMRI01006",
+    "exam_item_name": "磁共振增强成像-胸部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XMRI01007",
+    "exam_item_name": "磁共振增强成像-腰骶部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XMRI01001",
+    "exam_item_name": "磁共振增强成像-腹部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "XMRI01002",
+    "exam_item_name": "磁共振增强成像-颈部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "MRI01008",
+    "exam_item_name": "磁共振成像检查-冠脉",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "MRI01010",
+    "exam_item_name": "磁共振成像检查-四肢",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "MRI01006",
+    "exam_item_name": "磁共振成像检查-头颅",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "MRI01009",
+    "exam_item_name": "磁共振成像检查-盆腔",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "MRI01004",
+    "exam_item_name": "磁共振成像检查-胸部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "MRI01007",
+    "exam_item_name": "磁共振成像检查-腰骶部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "MRI01001",
+    "exam_item_name": "磁共振成像检查-腹部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "MRI01005",
+    "exam_item_name": "磁共振成像检查-颈部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "MRA01005",
+    "exam_item_name": "磁共振血管造影术-四肢",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "MRA01001",
+    "exam_item_name": "磁共振血管造影术-头颅",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "MRA01003",
+    "exam_item_name": "磁共振血管造影术-胸部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "MRA01004",
+    "exam_item_name": "磁共振血管造影术-腹部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "MRA01002",
+    "exam_item_name": "磁共振血管造影术-颈部",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "HPE01001",
+    "exam_item_name": "空腹13C呼气试验",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "HPE01002",
+    "exam_item_name": "空腹14C呼气试验",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "SEMEN_TEST",
+    "exam_item_name": "精液常规检查",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "AMNI_TEST",
+    "exam_item_name": "羊水检查",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "STO05001",
+    "exam_item_name": "耳科常规检查",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "STO01001",
+    "exam_item_name": "耳鼻咽喉科检查",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "EMG01001",
+    "exam_item_name": "肌电图检查",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "END01002",
+    "exam_item_name": "肠镜检查",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "TUMOR_MARK",
+    "exam_item_name": "肿瘤标记物",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "TUMOR_LCA",
+    "exam_item_name": "肿瘤标记物（肺癌自身抗体七项）",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "END01001",
+    "exam_item_name": "胃镜检查",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "GPE04006",
+    "exam_item_name": "背部视诊",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "GPE04005",
+    "exam_item_name": "背部触诊",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "CH&AS_REXA",
+    "exam_item_name": "胸腹水常规",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "GPE02002",
+    "exam_item_name": "胸部听诊",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "EEG01001",
+    "exam_item_name": "脑电图检查",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "CERE_FLUID",
+    "exam_item_name": "脑脊液常规",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "ULT03001",
+    "exam_item_name": "腔内超声检查（经直肠）",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "ULT02001",
+    "exam_item_name": "腔内超声检查（经阴道）",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "GPE03002",
+    "exam_item_name": "腹部叩诊",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "GPE02003",
+    "exam_item_name": "腹部听诊",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "GPE04004",
+    "exam_item_name": "腹部触诊",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "DHH01002",
+    "exam_item_name": "药物过敏史",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "INULIN_CLEAR",
+    "exam_item_name": "菊粉清除试验",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "BlOOD_REXA",
+    "exam_item_name": "血常规检查",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "BLOGA_ANAL",
+    "exam_item_name": "血气分析",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "BlOOD_CHEM",
+    "exam_item_name": "血液化学检验",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "BlOOD_ELECTR",
+    "exam_item_name": "血液化学检验（电解质）",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "BlOOD_CHOMET",
+    "exam_item_name": "血液化学检验（糖代谢）",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "BlOOD_LFT",
+    "exam_item_name": "血液化学检验（肝功能）",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "BlOOD_RFT",
+    "exam_item_name": "血液化学检验（肾功能）",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "BlOOD_SFT",
+    "exam_item_name": "血液化学检验（胃功能）",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "BlOOD_LIPID",
+    "exam_item_name": "血液化学检验（血脂）",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "BlOOD_HEMO",
+    "exam_item_name": "血液流变检验",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "BLOV_TEST",
+    "exam_item_name": "血液病毒检查",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "CHLA_TEST",
+    "exam_item_name": "衣原体检查",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "EYE01006",
+    "exam_item_name": "角膜地形图分析",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "ANEM_TEST",
+    "exam_item_name": "贫血指标",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "EYE01002",
+    "exam_item_name": "辨色力检查",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "IgE",
+    "exam_item_name": "过敏原特异性检测",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "PFT01001",
+    "exam_item_name": "通气功能检查",
+    "exam_attr": "报告类"
+  },
+  {
+    "exam_item_code": "VAG_ENV",
+    "exam_item_name": "阴道微环境",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "IgG",
+    "exam_item_name": "食物不耐受检测",
+    "exam_attr": "实验类"
+  },
+  {
+    "exam_item_code": "BONE_MARROW",
+    "exam_item_name": "骨髓穿刺检查",
+    "exam_attr": "实验类"
+  }
+]

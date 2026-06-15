@@ -27,11 +27,17 @@
             var res = await fetch('/api/reference/exam-items');
             var json = await res.json();
             examItemsCache = json.data || [];
-            return examItemsCache;
         } catch (e) {
-            console.error('加载检查项目失败:', e);
-            return [];
+            // 回退到静态 JSON
+            try {
+                var res2 = await fetch('/mock-data/reference-exam-items.json');
+                examItemsCache = await res2.json();
+            } catch (e2) {
+                console.error('加载检查项目失败:', e2);
+                return [];
+            }
         }
+        return examItemsCache;
     }
 
     /** 加载指定项目下的指标 */
@@ -42,8 +48,15 @@
             var json = await res.json();
             return json.data || [];
         } catch (e) {
-            console.error('加载指标失败:', e);
-            return [];
+            // 回退到静态 JSON（全量加载后前端过滤）
+            try {
+                var res2 = await fetch('/mock-data/reference-indicators.json');
+                var all = await res2.json();
+                return all.filter(function (ind) { return ind.exam_item_code === examItemCode; });
+            } catch (e2) {
+                console.error('加载指标失败:', e2);
+                return [];
+            }
         }
     }
 
