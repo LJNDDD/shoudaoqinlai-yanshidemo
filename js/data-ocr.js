@@ -1,9 +1,11 @@
 /**
- * 数据管理 — OCR 识别模块
- * 上传图片 → server.js 调百度 OCR → 返回结果 → 用户编辑 → 保存
+ * 数据管理 — OCR 识别模块（OCR.space 直连版）
+ * 浏览器直接调 OCR.space API，无需 server.js
  */
 (function () {
     'use strict';
+
+    var OCR_API_KEY = 'K89833219088957';
 
     var overlay = document.getElementById('ocrOverlay');
     var body = document.getElementById('ocrBody');
@@ -13,6 +15,7 @@
     var btnOcrEntry = document.getElementById('btnOcrEntry');
 
     var ocrResult = null;
+    var referenceCache = null;
 
     function escapeHtml(str) {
         if (!str) return '';
@@ -81,22 +84,94 @@
         reader.readAsDataURL(file);
     }
 
-    /** 调用 server.js OCR API */
+    // ========== OCR 文字提取 ==========
+
+    function levenshtein(a, b) { var m=a.length,n=b.length; var dp=[]; for(var i=0;i<=m;i++){dp[i]=[];for(var j=0;j<=n;j++)dp[i][j]=i===0?j:j===0?i:0;} for(var i=1;i<=m;i++)for(var j=1;j<=n;j++)dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1])+1; return dp[m][n]; }
+    function similarity(a, b) { var m=Math.max(a.length,b.length); if(m===0)return 1; return 1-levenshtein(a,b)/m; }
+
+    function matchIndicator(name, refs) {
+        var best=null, bestScore=0;
+        var clean = name.replace(/[（(].*?[)）]/g,'').replace(/\s+/g,'').replace(/[^一-龥a-zA-Z0-9]/g,'').toLowerCase();
+        refs.forEach(function(ref){
+            var rc = ref.indicator_name.replace(/[（(].*?[)）]/g,'').replace(/\s+/g,'').replace(/[^一-龥a-zA-Z0-9]/g,'').toLowerCase();
+            var s = similarity(clean, rc);
+            if (clean.indexOf(rc)!==-1 || rc.indexOf(clean)!==-1) s = Math.max(s, 0.8);
+            if (s > bestScore) { bestScore = s; best = ref; }
+        });
+        return { match: best, score: bestScore };
+    }
+
+    function extractPatientInfo(text) {
+        var info = { name:'', gender:'', birthDate:'', age:'' };
+        var pns = [/姓名[:：]\s*([^\n\r]+)/, /患者[:：]\s*([^\n\r]+)/, /姓名\s+([^\n\r]{2,4})/];
+        for(var i=0;i<pns.length;i++){var m=text.match(pns[i]);if(m){info.name=m[1].trim();break;}}
+        var gm=text.match(/性别[:：]\s*(男|女)/); if(gm)info.gender=gm[1];
+        var am=text.match(/年龄[:：]\s*(\d+)/); if(am)info.age=am[1];
+        var dm=text.match(/临床诊断[:：]\s*([^\n\r]+)/); if(dm&&!info.name)info.name='患者('+dm[1].trim()+')';
+        return info;
+    }
+
+    function extractVisitInfo(text) {
+        var info = { visitTime:'', sampleNo:'', dept:'' };
+        var m=text.match(/(?:检验日期|采样日期|送检日期|报告日期|接收时间)[:：]\s*(\d{4}[-\/.]\d{1,2}[-\/.]\d{1,2})/); if(m)info.visitTime=m[1].replace(/[\/.]/g,'-');
+        return info;
+    }
+
+    function extractIndicators(text) {
+        var lines=text.split('\n').map(function(l){return l.trim();}).filter(function(l){return l.length>0;});
+        var start=0;
+        for(var i=0;i<lines.length;i++){if(/^(项目名称|英文与方法|结果|单位|参考值)/.test(lines[i])){var j=i+1;while(j<lines.length&&lines[j].length<15&&!/[.*\d]/.test(lines[j]))j++;start=j;break;}}
+        var inds=[], np=/^[\d.*]+|.*[一-龥]/;
+        for(var i=start;i<lines.length-3;i++){
+            var ln=lines[i]; if(!np.test(ln))continue;
+            if(/^(检验|报告|项目|序号|编号|结果|参考|单位|正常|异常|临床|接收|送检)/.test(ln))continue;
+            var name=ln.replace(/^[\d.*\s]+/,'').trim();
+            var val=lines[i+2]||'', unit=lines[i+3]||'', ref=lines[i+4]||'';
+            if(!/^[\d.]+$/.test(val))continue;
+            if(!/[\d.<>～~]/.test(ref))continue;
+            inds.push({name:name, value:unit?val+' '+unit:val, reference:ref});
+            i+=4;
+        }
+        return inds;
+    }
+
+    async function loadReferenceData() {
+        if (referenceCache) return referenceCache;
+        try { var r=await fetch('/mock-data/reference-indicators.json'); referenceCache=await r.json(); } catch(e) { referenceCache=[]; }
+        return referenceCache;
+    }
+
+    /** 调用 OCR.space API（前端直连） */
     async function recognizeImage(base64) {
         try {
-            var res = await fetch('/api/ocr/recognize', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ image: base64 }),
-            });
-            var contentType = res.headers.get('content-type') || '';
-            if (contentType.indexOf('application/json') === -1) {
-                throw new Error('OCR 服务不可用，请本地运行 node server.js');
-            }
-            var json = await res.json();
-            if (!json.success) throw new Error(json.message || '识别失败');
+            var form = new FormData();
+            form.append('apikey', OCR_API_KEY);
+            form.append('base64Image', base64);
+            form.append('language', 'chs');
+            form.append('isOverlayRequired', 'false');
 
-            ocrResult = json.data;
+            var res = await fetch('https://api.ocr.space/parse/image', { method: 'POST', body: form });
+            var data = await res.json();
+            if (data.IsErroredOnProcessing) throw new Error(data.ErrorMessage || 'OCR处理失败');
+            if (!data.ParsedResults || data.ParsedResults.length===0) throw new Error('未识别到文字');
+
+            var ocrText = data.ParsedResults[0].ParsedText;
+            var patientInfo = extractPatientInfo(ocrText);
+            var visitInfo = extractVisitInfo(ocrText);
+            var rawIndicators = extractIndicators(ocrText);
+            var refData = await loadReferenceData();
+
+            var matchedIndicators = rawIndicators.map(function(ind){
+                var r = matchIndicator(ind.name, refData);
+                return {
+                    raw_name: ind.name, raw_value: ind.value, raw_reference: ind.reference,
+                    matched: r.match && r.score>=0.4 ? r.match : null,
+                    confidence: Math.round(r.score*100),
+                    confidence_level: r.score>=0.7?'high':r.score>=0.4?'medium':'low',
+                };
+            });
+
+            ocrResult = { raw_text: ocrText, patient: patientInfo, visit: visitInfo, indicators: matchedIndicators };
             renderResult();
             btnConfirm.style.display = '';
             toast('识别完成！请核对并修改数据后保存', 'success');
