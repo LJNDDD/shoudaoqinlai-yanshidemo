@@ -1,4 +1,8 @@
 {
+  "name": "shoudaoqinlai-yanshidemo",
+  "scripts": {
+    "build": "echo 'no build needed'"
+  },
   "dependencies": {
     "sql.js": "^1.14.1",
     "tencentcloud-sdk-nodejs-ocr": "^4.1.249",
