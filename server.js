@@ -2,11 +2,12 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const initSqlJs = require('sql.js');
+const { ocr } = require('tencentcloud-sdk-nodejs-ocr');
 
-// ========== 百度 OCR 配置 ==========
-// 请填入你百度 AI 开放平台创建应用的参数
-const BAIDU_API_KEY = 'YOUR_BAIDU_API_KEY';        // ← 改成你的 API Key
-const BAIDU_SECRET_KEY = 'YOUR_BAIDU_SECRET_KEY';   // ← 改成你的 Secret Key
+const TencentOcrClient = ocr.v20181119.Client;
+const TENCENT_SECRET_ID = process.env.TENCENT_SECRET_ID || process.env.TENCENTCLOUD_SECRET_ID || '';
+const TENCENT_SECRET_KEY = process.env.TENCENT_SECRET_KEY || process.env.TENCENTCLOUD_SECRET_KEY || '';
+const TENCENT_OCR_REGION = process.env.TENCENT_OCR_REGION || 'ap-beijing';
 
 const PORT = 3000;
 const ROOT = __dirname;
@@ -40,6 +41,31 @@ async function initDB() {
 
 function saveDB() {
     fs.writeFileSync(DB_PATH, db.export());
+}
+
+function createTencentOcrClient() {
+    if (!TENCENT_SECRET_ID || !TENCENT_SECRET_KEY) {
+        throw new Error('腾讯云 OCR 未配置，请先设置 TENCENT_SECRET_ID 和 TENCENT_SECRET_KEY');
+    }
+
+    return new TencentOcrClient({
+        credential: {
+            secretId: TENCENT_SECRET_ID,
+            secretKey: TENCENT_SECRET_KEY,
+        },
+        region: TENCENT_OCR_REGION,
+        profile: {
+            signMethod: 'TC3-HMAC-SHA256',
+            httpProfile: {
+                reqMethod: 'POST',
+                reqTimeout: 30,
+            },
+        },
+    });
+}
+
+function extractImageBase64(imageData) {
+    return String(imageData || '').replace(/^data:image\/\w+;base64,/, '');
 }
 
 // ========== 工具函数 ==========
@@ -259,55 +285,15 @@ async function handleAPI(req, res, method, pathParts) {
             if (!body.image) return sendJSON(res, 400, { success: false, message: '缺少图片数据' });
 
             try {
-                const base64 = body.image.replace(/^data:image\/\w+;base64,/, '');
-                const https = require('https');
-
-                // 1. 获取 access_token
-                const tokenData = await new Promise((resolve, reject) => {
-                    const url = 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=' +
-                        encodeURIComponent(BAIDU_API_KEY) + '&client_secret=' + encodeURIComponent(BAIDU_SECRET_KEY);
-                    https.get(url, res => {
-                        let d = '';
-                        res.on('data', c => d += c);
-                        res.on('end', () => {
-                            try { resolve(JSON.parse(d)); } catch (e) { reject(new Error('获取token失败')); }
-                        });
-                    }).on('error', reject);
-                });
-                if (tokenData.error) throw new Error(tokenData.error_description || tokenData.error);
-                const accessToken = tokenData.access_token;
-
-                // 2. 调用通用文字识别
-                const ocrResult = await new Promise((resolve, reject) => {
-                    const postData = 'image=' + encodeURIComponent(base64) + '&detect_direction=false&paragraph=false';
-                    const hReq = https.request({
-                        hostname: 'aip.baidubce.com',
-                        path: '/rest/2.0/ocr/v1/general_basic?access_token=' + accessToken,
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': Buffer.byteLength(postData) },
-                    }, res => {
-                        let d = '';
-                        res.on('data', c => d += c);
-                        res.on('end', () => {
-                            try { resolve(JSON.parse(d)); } catch (e) { reject(new Error('解析OCR结果失败')); }
-                        });
-                    });
-                    hReq.on('error', reject);
-                    hReq.write(postData);
-                    hReq.end();
-                });
-                if (ocrResult.error_code) throw new Error(ocrResult.error_msg || ('错误码:' + ocrResult.error_code));
-
-                // 拼接识别到的所有文字
-                const words = (ocrResult.words_result || []).map(w => w.words);
+                const client = createTencentOcrClient();
+                const base64 = extractImageBase64(body.image);
+                const ocrResult = await client.GeneralBasicOCR({ ImageBase64: base64 });
+                const words = (ocrResult.TextDetections || []).map(item => item.DetectedText).filter(Boolean);
                 const ocrText = words.join('\n');
 
-                // 提取字段（复用原有逻辑）
                 const patientInfo = extractPatientInfo(ocrText);
                 const visitInfo = extractVisitInfo(ocrText);
                 const rawIndicators = extractIndicators(ocrText);
-
-                // 从 reference_data 模糊匹配
                 const refData = queryAll('SELECT exam_item_code, exam_item_name, indicator_code, indicator_name FROM reference_data');
                 const matchedIndicators = rawIndicators.map(ind => {
                     const { match, score } = matchIndicator(ind.name, refData);

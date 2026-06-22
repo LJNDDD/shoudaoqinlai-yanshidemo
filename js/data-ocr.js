@@ -144,6 +144,20 @@
     /** 调用 OCR.space API（前端直连） */
     async function recognizeImage(base64) {
         try {
+            var backendRes = await fetch('/api/ocr/recognize', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image: base64 })
+            });
+            var backendData = await backendRes.json();
+            if (!backendRes.ok || !backendData.success) throw new Error(backendData.message || 'OCR处理失败');
+
+            ocrResult = backendData.data;
+            renderResult();
+            btnConfirm.style.display = '';
+            toast('识别完成！请核对并修改数据后保存', 'success');
+            return;
+
             var form = new FormData();
             form.append('apikey', OCR_API_KEY);
             form.append('base64Image', base64);
