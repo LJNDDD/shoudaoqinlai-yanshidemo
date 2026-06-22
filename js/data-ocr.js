@@ -141,23 +141,29 @@
         return referenceCache;
     }
 
-    /** 调用 OCR.space API（前端直连） */
+    /** 先尝试后端腾讯云 OCR，失败则用 OCR.space 直连 */
     async function recognizeImage(base64) {
         try {
+            // 1. 优先使用后端腾讯云 OCR
             var backendRes = await fetch('/api/ocr/recognize', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ image: base64 })
             });
-            var backendData = await backendRes.json();
-            if (!backendRes.ok || !backendData.success) throw new Error(backendData.message || 'OCR处理失败');
+            if (backendRes.ok) {
+                var backendData = await backendRes.json();
+                if (backendData.success) {
+                    ocrResult = backendData.data;
+                    renderResult();
+                    btnConfirm.style.display = '';
+                    toast('识别完成！请核对并修改数据后保存', 'success');
+                    return;
+                }
+            }
+        } catch (e) { /* 后端不可用，尝试 OCR.space */ }
 
-            ocrResult = backendData.data;
-            renderResult();
-            btnConfirm.style.display = '';
-            toast('识别完成！请核对并修改数据后保存', 'success');
-            return;
-
+        try {
+            // 2. 回退到 OCR.space 前端直连
             var form = new FormData();
             form.append('apikey', OCR_API_KEY);
             form.append('base64Image', base64);
