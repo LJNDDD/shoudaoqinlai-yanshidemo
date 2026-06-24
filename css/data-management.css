@@ -1066,6 +1066,16 @@
     color: #1661AB;
 }
 
+/* ---------- 检查明细表格表单 ---------- */
+.exam-table table { border-collapse: collapse; }
+.exam-table thead th { background: #F5F3F4; padding: 0.35rem 0.5rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; color: #737784; border-bottom: 1px solid rgba(115,119,132,0.1); text-align: left; }
+.exam-table tbody td { padding: 0.3rem 0.4rem; border-bottom: 1px solid rgba(115,119,132,0.05); vertical-align: middle; }
+.exam-table select, .exam-table input { padding: 0.25rem 0.4rem; border: 1px solid #DFE3E8; border-radius: 6px; font-size: 0.68rem; font-family: inherit; outline: none; box-sizing: border-box; }
+.exam-table select:focus, .exam-table input:focus { border-color: #1661AB; box-shadow: 0 0 0 2px rgba(22,97,171,0.1); }
+.exam-table .exam-row-del { width: 22px; height: 22px; border-radius: 50%; border: none; cursor: pointer; background: rgba(0,0,0,0.05); color: #BA1A1A; font-size: 0.55rem; display: flex; align-items: center; justify-content: center; }
+.exam-table .exam-row-del:hover { background: #FFDAD6; }
+.exam-table .exam-row-del:disabled { opacity: 0.3; cursor: default; }
+
 /* ---------- OCR 识别 ---------- */
 .ocr-upload-area {
     border: 2px dashed rgba(22,97,171,0.2);

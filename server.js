@@ -5,8 +5,8 @@ const initSqlJs = require('sql.js');
 const { ocr } = require('tencentcloud-sdk-nodejs-ocr');
 
 const TencentOcrClient = ocr.v20181119.Client;
-const TENCENT_SECRET_ID = process.env.TENCENT_SECRET_ID || process.env.TENCENTCLOUD_SECRET_ID || '';
-const TENCENT_SECRET_KEY = process.env.TENCENT_SECRET_KEY || process.env.TENCENTCLOUD_SECRET_KEY || '';
+const TENCENT_SECRET_ID = process.env.TENCENT_SECRET_ID || 'AKID6NUP7brs9CzXqwoSr11mJ1XpvoSr1wnT';
+const TENCENT_SECRET_KEY = process.env.TENCENT_SECRET_KEY || 'TGTbZJpMlvz0qSt77sQ7bqqb8QUKvIQK';
 const TENCENT_OCR_REGION = process.env.TENCENT_OCR_REGION || 'ap-beijing';
 
 const PORT = 3000;

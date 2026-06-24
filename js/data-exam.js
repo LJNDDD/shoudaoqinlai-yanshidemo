@@ -255,32 +255,34 @@
             toast('无可用就诊记录，请先新增就诊', 'error');
             return;
         }
-        var examOptions = await buildExamItemOptions();
-        if (examOptions.length === 0) {
-            toast('参考数据加载失败', 'error');
-            return;
-        }
-
-        var fields = window.ModalManager.examFields(visitOptions);
-        // 注入检查项目选项
-        fields.forEach(function (f) {
-            if (f.name === 'exam_item_code') f.options = examOptions;
-        });
-
-        var initData = currentVisitSerial ? { visit_serial_no: currentVisitSerial } : null;
-        window.ModalManager.show('新增检查明细', fields, initData, async function (data) {
+        window.ModalManager.showExamTable('新增检查明细', visitOptions, currentVisitSerial, '', null, async function (result) {
             try {
-                if (!data.visit_serial_no || !data.exam_item_code || !data.indicator_code) {
-                    toast('请填写完整信息（就诊、检查项目、指标）', 'error');
-                    return;
+                // 先查出检查项目名称
+                var examItems = await window.ModalManager.loadExamItems();
+                var examItem = examItems.find(function (it) { return it.exam_item_code === result.exam_item_code; });
+                var examItemName = examItem ? examItem.exam_item_name : result.exam_item_code;
+
+                var created = 0;
+                for (var i = 0; i < result.rows.length; i++) {
+                    var row = result.rows[i];
+                    if (!row.indicator_code) continue;
+                    await window.DataAPI.createExamDetail({
+                        visit_serial_no: result.visit_serial_no,
+                        exam_item_code: result.exam_item_code,
+                        exam_item_name: examItemName,
+                        indicator_code: row.indicator_code,
+                        indicator_name: row.indicator_name,
+                        exam_item_attr: '',
+                        exam_value: row.exam_value,
+                        reference_value: row.reference_value,
+                        qualitative_result: '',
+                    });
+                    created++;
                 }
-                await window.DataAPI.createExamDetail(data);
                 window.ModalManager.close();
-                toast('检查明细新增成功');
-                if (data.visit_serial_no !== currentVisitSerial) {
-                    await window.VisitModule.reload();
-                }
-                await loadDetails(data.visit_serial_no, currentPatientCode);
+                toast('新增 ' + created + ' 条检查明细');
+                if (result.visit_serial_no !== currentVisitSerial) await window.VisitModule.reload();
+                await loadDetails(result.visit_serial_no, currentPatientCode);
             } catch (err) {
                 toast('新增失败: ' + err.message, 'error');
             }
@@ -292,20 +294,25 @@
         var detail = detailsCache.find(function (d) { return d.id === id; });
         if (!detail) return;
         var visitOptions = buildVisitOptions();
-        var examOptions = await buildExamItemOptions();
-
-        var fields = window.ModalManager.examFields(visitOptions);
-        fields.forEach(function (f) {
-            if (f.name === 'exam_item_code') f.options = examOptions;
-        });
-
-        window.ModalManager.show('编辑检查明细', fields, detail, async function (data) {
+        var initRows = [{
+            indicator_code: detail.indicator_code, indicator_name: detail.indicator_name,
+            exam_value: detail.exam_value, reference_value: detail.reference_value,
+        }];
+        window.ModalManager.showExamTable('编辑检查明细', visitOptions, detail.visit_serial_no, detail.exam_item_code, initRows, async function (result) {
             try {
-                if (!data.visit_serial_no || !data.exam_item_code || !data.indicator_code) {
-                    toast('请填写完整信息', 'error');
-                    return;
-                }
-                await window.DataAPI.updateExamDetail(id, data);
+                var row = result.rows[0];
+                if (!row || !row.indicator_code) { toast('请选择指标', 'error'); return; }
+                var examItems = await window.ModalManager.loadExamItems();
+                var examItem = examItems.find(function (it) { return it.exam_item_code === result.exam_item_code; });
+                await window.DataAPI.updateExamDetail(id, {
+                    visit_serial_no: result.visit_serial_no,
+                    exam_item_code: result.exam_item_code,
+                    exam_item_name: examItem ? examItem.exam_item_name : result.exam_item_code,
+                    indicator_code: row.indicator_code,
+                    indicator_name: row.indicator_name,
+                    exam_value: row.exam_value,
+                    reference_value: row.reference_value,
+                });
                 window.ModalManager.close();
                 toast('检查明细编辑成功');
                 await loadDetails(currentVisitSerial, currentPatientCode);
