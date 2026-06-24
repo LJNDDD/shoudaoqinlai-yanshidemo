@@ -1,6 +1,6 @@
 /**
  * 数据管理 — 右侧抽屉表单
- * 检查明细表单支持级联下拉（项目→指标）
+ * 检查明细支持横向表格多行输入（项目→指标级联）
  */
 (function () {
     'use strict';
@@ -13,14 +13,13 @@
     var btnClose = document.getElementById('btnDrawerClose');
 
     var currentOnSubmit = null;
-    var examItemsCache = null; // 参考数据缓存
+    var examItemsCache = null;
 
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    /** 加载参考数据（检查项目列表） */
     async function loadExamItems() {
         if (examItemsCache) return examItemsCache;
         try {
@@ -28,19 +27,14 @@
             var json = await res.json();
             examItemsCache = json.data || [];
         } catch (e) {
-            // 回退到静态 JSON
             try {
                 var res2 = await fetch('/mock-data/reference-exam-items.json');
                 examItemsCache = await res2.json();
-            } catch (e2) {
-                console.error('加载检查项目失败:', e2);
-                return [];
-            }
+            } catch (e2) { return []; }
         }
         return examItemsCache;
     }
 
-    /** 加载指定项目下的指标 */
     async function loadIndicators(examItemCode) {
         if (!examItemCode) return [];
         try {
@@ -48,19 +42,14 @@
             var json = await res.json();
             return json.data || [];
         } catch (e) {
-            // 回退到静态 JSON（全量加载后前端过滤）
             try {
                 var res2 = await fetch('/mock-data/reference-indicators.json');
                 var all = await res2.json();
                 return all.filter(function (ind) { return ind.exam_item_code === examItemCode; });
-            } catch (e2) {
-                console.error('加载指标失败:', e2);
-                return [];
-            }
+            } catch (e2) { return []; }
         }
     }
 
-    /** 渲染表单字段 */
     function buildFormHTML(fields, data) {
         var html = '';
         fields.forEach(function (f) {
@@ -68,128 +57,191 @@
             html += '<label>' + f.label + '</label>';
             var val = data && data[f.name] !== undefined ? data[f.name] : (f.value || '');
             if (f.type === 'select') {
-                html += '<select name="' + f.name + '" id="field_' + f.name + '"' + (f.readonly ? ' disabled' : '') + (f.onchange ? ' onchange="' + f.onchange + '"' : '') + '>';
-                var opts = f.options || [];
-                if (f.placeholder) {
-                    html += '<option value="">' + f.placeholder + '</option>';
-                }
-                opts.forEach(function (opt) {
-                    var selected = String(val) === String(opt.value) ? ' selected' : '';
-                    html += '<option value="' + escapeHtml(opt.value) + '"' + selected + '>' + escapeHtml(opt.label) + '</option>';
+                html += '<select name="' + f.name + '" id="field_' + f.name + '"' + (f.readonly ? ' disabled' : '') + '>';
+                if (f.placeholder) html += '<option value="">' + f.placeholder + '</option>';
+                (f.options || []).forEach(function (opt) {
+                    html += '<option value="' + escapeHtml(opt.value) + '"' + (String(val) === String(opt.value) ? ' selected' : '') + '>' + escapeHtml(opt.label) + '</option>';
                 });
                 html += '</select>';
                 if (f.readonly) html += '<input type="hidden" name="' + f.name + '" value="' + escapeHtml(val) + '">';
-            } else if (f.type === 'textarea') {
-                html += '<textarea name="' + f.name + '" id="field_' + f.name + '" rows="3"' + (f.readonly ? ' readonly' : '') + '>' + escapeHtml(val) + '</textarea>';
-            } else if (f.type === 'hidden') {
-                html += '<input type="hidden" name="' + f.name + '" id="field_' + f.name + '" value="' + escapeHtml(val) + '">';
             } else {
-                var inputType = f.type || 'text';
-                html += '<input type="' + inputType + '" name="' + f.name + '" id="field_' + f.name + '" value="' + escapeHtml(val) + '"' + (f.readonly ? ' readonly' : '') + (f.placeholder ? ' placeholder="' + escapeHtml(f.placeholder) + '"' : '') + '>';
+                html += '<input type="' + (f.type || 'text') + '" name="' + f.name + '" id="field_' + f.name + '" value="' + escapeHtml(val) + '"' + (f.readonly ? ' readonly' : '') + (f.placeholder ? ' placeholder="' + escapeHtml(f.placeholder) + '"' : '') + '>';
             }
             html += '</div>';
         });
         return html;
     }
 
-    /** 打开抽屉 */
     async function show(title, fields, data, onSubmit) {
         titleEl.textContent = title;
         bodyEl.innerHTML = buildFormHTML(fields, data);
         currentOnSubmit = onSubmit;
         overlay.classList.add('show');
 
-        // 如果是检查明细表单，绑定级联下拉事件
         var examItemSelect = bodyEl.querySelector('#field_exam_item_code');
         if (examItemSelect) {
             examItemSelect.addEventListener('change', async function () {
-                await updateIndicatorDropdown(this.value, data);
+                var indSelect = bodyEl.querySelector('#field_indicator_code');
+                if (!indSelect) return;
+                var indicators = await loadIndicators(this.value);
+                indSelect.innerHTML = '<option value="">请选择指标</option>' +
+                    indicators.map(function (i) { return '<option value="' + i.indicator_code + '">' + i.indicator_name + '</option>'; }).join('');
             });
-            // 编辑模式下，如果有初始值，加载对应指标
             if (data && data.exam_item_code) {
-                await updateIndicatorDropdown(data.exam_item_code, data);
+                examItemSelect.value = data.exam_item_code;
+                examItemSelect.dispatchEvent(new Event('change'));
             }
         }
     }
 
-    /** 级联更新指标下拉 */
-    async function updateIndicatorDropdown(examItemCode, editData) {
-        var indicatorSelect = bodyEl.querySelector('#field_indicator_code');
-        if (!indicatorSelect) return;
+    /** 带表格的检查明细表单（支持多行添加） */
+    async function showExamTable(title, visitOptions, initVisitSerial, initExamCode, initRows, onSubmit) {
+        titleEl.textContent = title;
+        currentOnSubmit = onSubmit;
 
-        // 加载指标
-        var indicators = await loadIndicators(examItemCode);
-        var currentVal = editData ? editData.indicator_code : '';
+        var headerHtml = '<div class="form-group"><label>就诊流水号</label>' +
+            '<select id="examTblVisit" style="width:100%;">' +
+            (visitOptions || []).map(function (o) {
+                return '<option value="' + o.value + '"' + (o.value === initVisitSerial ? ' selected' : '') + '>' + o.label + '</option>';
+            }).join('') + '</select></div>';
 
-        var optsHtml = '<option value="">请选择指标</option>';
-        indicators.forEach(function (ind) {
-            var sel = (editData && ind.indicator_code === currentVal) ? ' selected' : '';
-            optsHtml += '<option value="' + escapeHtml(ind.indicator_code) + '"' + sel + '>' + escapeHtml(ind.indicator_name) + '</option>';
+        var examItems = await loadExamItems();
+        headerHtml += '<div class="form-group"><label>检查项目</label>' +
+            '<select id="examTblItem" style="width:100%;"><option value="">请选择检查项目</option>' +
+            examItems.map(function (it) {
+                return '<option value="' + it.exam_item_code + '"' + (it.exam_item_code === initExamCode ? ' selected' : '') + '>' + it.exam_item_name + '</option>';
+            }).join('') + '</select></div>';
+
+        bodyEl.innerHTML = headerHtml +
+            '<hr style="margin:0.6rem 0;border-color:rgba(115,119,132,0.1);">' +
+            '<div class="exam-table" id="examTable"></div>' +
+            '<button class="btn btn-cancel" id="btnExamAddRow" style="width:100%;margin-top:0.4rem;"><i class="fas fa-plus"></i> 添加一行</button>';
+
+        // 行数据
+        var rows = initRows && initRows.length > 0 ? initRows : [{ indicator_code: '', indicator_name: '', exam_value: '', reference_value: '' }];
+        var indicatorCache = {};
+
+        async function renderTable() {
+            var tbl = document.getElementById('examTable');
+            if (!tbl) return;
+            tbl.innerHTML = '<table style="width:100%;font-size:0.72rem;"><thead><tr>' +
+                '<th style="width:35%;">检查指标</th><th style="width:25%;">检查值</th><th style="width:25%;">参考值</th><th style="width:40px;"></th>' +
+                '</tr></thead><tbody>' + rows.map(function (r, i) {
+                    var indOpts = '<option value="">请选择</option>';
+                    Object.keys(indicatorCache).forEach(function (code) {
+                        var ind = indicatorCache[code];
+                        indOpts += '<option value="' + code + '"' + (code === r.indicator_code ? ' selected' : '') + '>' + ind.indicator_name + '</option>';
+                    });
+                    return '<tr><td><select class="exam-row-ind" data-idx="' + i + '" style="width:100%;">' + indOpts + '</select></td>' +
+                        '<td><input type="text" class="exam-row-val" data-idx="' + i + '" value="' + escapeHtml(r.exam_value) + '" style="width:100%;"></td>' +
+                        '<td><input type="text" class="exam-row-ref" data-idx="' + i + '" value="' + escapeHtml(r.reference_value) + '" style="width:100%;"></td>' +
+                        '<td><button class="btn-icon-xs exam-row-del" data-idx="' + i + '" title="删除" ' + (rows.length <= 1 ? 'disabled' : '') + '><i class="fas fa-times"></i></button></td></tr>';
+                }).join('') + '</tbody></table>';
+
+            // 绑定事件
+            tbl.querySelectorAll('.exam-row-del').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var idx = parseInt(this.getAttribute('data-idx'));
+                    rows.splice(idx, 1);
+                    renderTable();
+                });
+            });
+            tbl.querySelectorAll('.exam-row-val, .exam-row-ref').forEach(function (inp) {
+                inp.addEventListener('input', function () {
+                    var idx = parseInt(this.getAttribute('data-idx'));
+                    if (rows[idx]) {
+                        if (this.classList.contains('exam-row-val')) rows[idx].exam_value = this.value;
+                        else rows[idx].reference_value = this.value;
+                    }
+                });
+            });
+        }
+
+        // 检查项目变化 → 加载指标选项
+        document.getElementById('examTblItem').addEventListener('change', async function () {
+            indicatorCache = {};
+            var code = this.value;
+            if (code) {
+                var inds = await loadIndicators(code);
+                inds.forEach(function (i) { indicatorCache[i.indicator_code] = i; });
+            }
+            // 清空已有行
+            rows = [{ indicator_code: '', indicator_name: '', exam_value: '', reference_value: '' }];
+            renderTable();
         });
-        indicatorSelect.innerHTML = optsHtml;
+
+        // 初始加载
+        if (initExamCode) {
+            var inds = await loadIndicators(initExamCode);
+            inds.forEach(function (i) { indicatorCache[i.indicator_code] = i; });
+        }
+        renderTable();
+
+        // 添加行
+        document.getElementById('btnExamAddRow').addEventListener('click', function () {
+            rows.push({ indicator_code: '', indicator_name: '', exam_value: '', reference_value: '' });
+            renderTable();
+        });
+
+        // 重载 btnSubmit
+        btnSubmit.onclick = async function () {
+            // 收集数据
+            var result = {
+                visit_serial_no: document.getElementById('examTblVisit').value,
+                exam_item_code: document.getElementById('examTblItem').value,
+                rows: [],
+            };
+            bodyEl.querySelectorAll('.exam-row-ind').forEach(function (sel, i) {
+                var code = sel.value;
+                var name = sel.selectedOptions[0] ? sel.selectedOptions[0].textContent : '';
+                result.rows.push({
+                    indicator_code: code,
+                    indicator_name: name,
+                    exam_value: rows[i] ? rows[i].exam_value : '',
+                    reference_value: rows[i] ? rows[i].reference_value : '',
+                });
+            });
+            if (!result.visit_serial_no) { toast('请选择就诊流水号', 'error'); return; }
+            if (!result.exam_item_code) { toast('请选择检查项目', 'error'); return; }
+            if (onSubmit) onSubmit(result);
+        };
+
+        overlay.classList.add('show');
+
+        function toast(msg, type) {
+            var container = document.getElementById('toastContainer');
+            var el = document.createElement('div');
+            el.className = 'toast ' + (type || 'error');
+            el.innerHTML = '<i class="fas fa-' + (type === 'error' ? 'exclamation-circle' : 'check-circle') + '"></i> ' + escapeHtml(msg);
+            container.appendChild(el);
+            setTimeout(function () { el.classList.add('fade-out'); setTimeout(function () { el.remove(); }, 300); }, 2500);
+        }
     }
 
-    /** 关闭抽屉 */
     function close() {
         overlay.classList.remove('show');
         currentOnSubmit = null;
+        btnSubmit.onclick = function () { if (currentOnSubmit) currentOnSubmit(collectFormData()); };
     }
 
-    /** 收集表单数据（自动从下拉选项提取名称） */
     function collectFormData() {
         var inputs = bodyEl.querySelectorAll('input, select, textarea');
         var data = {};
-        inputs.forEach(function (el) {
-            if (el.name) data[el.name] = el.value;
-        });
-
-        // 从检查项目下拉提取项目名称和属性
-        var examSelect = bodyEl.querySelector('#field_exam_item_code');
-        if (examSelect && examSelect.selectedIndex >= 0) {
-            var opt = examSelect.selectedOptions[0];
-            if (opt && opt.value) {
-                data.exam_item_name = opt.textContent;
-                // 从 reference_data 缓存查属性（由 loadExamItems 缓存）
-                if (examItemsCache) {
-                    var found = examItemsCache.find(function (it) { return it.exam_item_code === opt.value; });
-                    if (found) {
-                        data.exam_item_name = found.exam_item_name;
-                        data.exam_item_attr = found.exam_attr || '';
-                    }
-                }
-            }
-        }
-
-        // 从指标下拉提取指标名称
-        var indSelect = bodyEl.querySelector('#field_indicator_code');
-        if (indSelect && indSelect.selectedIndex >= 0) {
-            var iopt = indSelect.selectedOptions[0];
-            if (iopt && iopt.value) {
-                data.indicator_name = iopt.textContent;
-            }
-        }
-
-        // 定性结果不开放自选，默认空（后续自动判断）
-        if (!data.qualitative_result) data.qualitative_result = '';
-
+        inputs.forEach(function (el) { if (el.name) data[el.name] = el.value; });
         return data;
     }
 
     btnCancel.addEventListener('click', close);
     btnClose.addEventListener('click', close);
-    overlay.addEventListener('click', function (e) {
-        if (e.target === overlay) close();
-    });
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
     btnSubmit.addEventListener('click', function () {
         if (currentOnSubmit) currentOnSubmit(collectFormData());
     });
 
-    // 暴露到全局
     window.ModalManager = {
-        show: show,
-        close: close,
-        collectFormData: collectFormData,
+        show: show, close: close, collectFormData: collectFormData,
         loadExamItems: loadExamItems,
+        showExamTable: showExamTable,
 
         patientFields: function () {
             return [
@@ -206,14 +258,10 @@
             ];
         },
 
-        /** 检查明细表单：隐藏编码字段，项目/指标从参考数据级联 */
         examFields: function (visitOptions) {
             return [
                 { name: 'visit_serial_no', label: '就诊流水号', type: 'select', options: visitOptions || [] },
                 { name: 'exam_item_code', label: '检查项目', type: 'select', placeholder: '请选择检查项目', options: [] },
-                { name: 'indicator_code', label: '检查指标', type: 'select', placeholder: '请先选择检查项目', options: [] },
-                { name: 'exam_value', label: '检查值', type: 'text', placeholder: '如 7.5' },
-                { name: 'reference_value', label: '检查参考值', type: 'text', placeholder: '如 4.0-10.0' },
             ];
         },
     };
