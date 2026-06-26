@@ -76,7 +76,7 @@ const productsData = [
         iconClass: "fas fa-heartbeat",
         iconColor: "#E74C3C",
         category: 1,
-        demoLink: "http://testhyhl.mai47.com:11042/hy/home",
+        demoLink: "http://testhyhl.mai47.com:11042/hy/home?appid=HY1&action=001&code=N2cKc%2BAPgU3okIeyLd%2Fk6LtCRQKmq8mk56eLtIl3hvJJLExBFwhvXqoz9ejIwlVyREiaCgnnFISAz33stxVO7Z3qGx90fiyimekDjwu17RRe3WgJSk0rk%2BSHhMpE7%2FYx3L3%2BdnSL2GUfAqBA6lLKuzRW4v327eKTn%2BVZW3yXKl9Xejc4l7otwzTCSQqhzJMdu7uT3AvRCdkXGCvAGyNJmi6ot1dKQ5rWLdW8%2FpOqxSAV%2BxxsljueB7j5xudHwU3OaAhL7cP53szHazY07ioKDQ%3D%3D",
         platform: "移动端",
         scenario: [1, 3]
     },
