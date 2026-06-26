@@ -1,7 +1,0 @@
-[
-  { "id": "VD001", "visit_serial_no": "VSN20260115001", "exam_item_code": "E001", "exam_item_name": "血常规", "indicator_code": "I001", "indicator_name": "白细胞计数", "exam_item_attr": "血液学", "exam_value": "7.5", "reference_value": "4.0-10.0 ×10⁹/L", "qualitative_result": "正常", "status": 1 },
-  { "id": "VD002", "visit_serial_no": "VSN20260115001", "exam_item_code": "E001", "exam_item_name": "血常规", "indicator_code": "I002", "indicator_name": "红细胞计数", "exam_item_attr": "血液学", "exam_value": "5.2", "reference_value": "4.3-5.8 ×10¹²/L", "qualitative_result": "正常", "status": 1 },
-  { "id": "VD003", "visit_serial_no": "VSN20260115001", "exam_item_code": "E002", "exam_item_name": "肝功能", "indicator_code": "I003", "indicator_name": "谷丙转氨酶(ALT)", "exam_item_attr": "生化", "exam_value": "65", "reference_value": "9-50 U/L", "qualitative_result": "偏高", "status": 1 },
-  { "id": "VD004", "visit_serial_no": "VSN20260201003", "exam_item_code": "E001", "exam_item_name": "血常规", "indicator_code": "I001", "indicator_name": "白细胞计数", "exam_item_attr": "血液学", "exam_value": "3.2", "reference_value": "4.0-10.0 ×10⁹/L", "qualitative_result": "偏低", "status": 1 },
-  { "id": "VD005", "visit_serial_no": "VSN20260201003", "exam_item_code": "E003", "exam_item_name": "尿常规", "indicator_code": "I004", "indicator_name": "尿蛋白", "exam_item_attr": "体液", "exam_value": "阴性(-)", "reference_value": "阴性", "qualitative_result": "正常", "status": 1 }
-]
