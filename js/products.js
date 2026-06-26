@@ -48,7 +48,7 @@ const productsData = [
         iconClass: "fas fa-heart-pulse",
         iconColor: "#3498DB",
         category: 3,
-        demoLink: "http://192.168.13.175:15173",
+        demoLink: "https://community-health-index-doctor-showcase.effortlessai.cn",
         platform: "Web端",
         scenario: [3, 2]
     },
@@ -62,7 +62,7 @@ const productsData = [
         iconClass: "fas fa-notes-medical",
         iconColor: "#2ECC71",
         category: 3,
-        demoLink: "http://192.168.13.175:15174",
+        demoLink: "https://community-health-index-patient-showcase.effortlessai.cn/",
         platform: "移动端",
         scenario: [3, 2]
     },
