@@ -108,7 +108,7 @@ const productsData = [
         platform: "移动端",
         scenario: [3, 2]
     },
-    // 7. 信手拈来检验报告解读-医生端
+    // 7. 检易通检验报告解读-医生端
     {
         id: 7,
         name: "检易通检验报告解读-医生端",
@@ -122,7 +122,7 @@ const productsData = [
         platform: "Web端",
         scenario: [4]
     },
-    // 8. 信手拈来检验报告解读-患者端
+    // 8. 检易通检验报告解读-患者端
     {
         id: 8,
         name: "检易通检验报告解读-患者端",
