@@ -90,7 +90,7 @@ const productsData = [
         iconClass: "fas fa-clipboard-list",
         iconColor: "#27AE60",
         category: 3,
-        demoLink: "https://test.mai47.com/static/jhgl/#/pages/login/index",
+        demoLink: "/demo/post-exam.html",
         platform: "移动端",
         scenario: [3, 1]
     },
@@ -132,7 +132,7 @@ const productsData = [
         iconClass: "fas fa-file-medical-alt",
         iconColor: "#2980B9",
         category: 4,
-        demoLink: "http://xsnl.mai47.com:3002/",
+        demoLink: "https://testxsnl.mai47.com:33001/index.html",
         platform: "移动端",
         scenario: [4]
     },
