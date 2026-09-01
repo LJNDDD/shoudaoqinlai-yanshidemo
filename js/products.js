@@ -132,7 +132,7 @@ const productsData = [
         iconClass: "fas fa-file-medical-alt",
         iconColor: "#2980B9",
         category: 4,
-        demoLink: "https://testxsnl.mai47.com:33001/index.html",
+        demoLink: "http://xsnl.mai47.com:3002/login.html",
         platform: "移动端",
         scenario: [4]
     },
