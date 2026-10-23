@@ -5,9 +5,13 @@ const initSqlJs = require('sql.js');
 const { ocr } = require('tencentcloud-sdk-nodejs-ocr');
 
 const TencentOcrClient = ocr.v20181119.Client;
-const TENCENT_SECRET_ID = process.env.TENCENT_SECRET_ID || 'AKID6NUP7brs9CzXqwoSr11mJ1XpvoSr1wnT';
-const TENCENT_SECRET_KEY = process.env.TENCENT_SECRET_KEY || 'TGTbZJpMlvz0qSt77sQ7bqqb8QUKvIQK';
+const TENCENT_SECRET_ID = process.env.TENCENT_SECRET_ID;
+const TENCENT_SECRET_KEY = process.env.TENCENT_SECRET_KEY;
 const TENCENT_OCR_REGION = process.env.TENCENT_OCR_REGION || 'ap-beijing';
+
+if (!TENCENT_SECRET_ID || !TENCENT_SECRET_KEY) {
+    console.error('缺少腾讯云 OCR 凭据：请通过环境变量 TENCENT_SECRET_ID / TENCENT_SECRET_KEY 提供，切勿写入代码。');
+}
 
 const PORT = 3000;
 const ROOT = __dirname;
