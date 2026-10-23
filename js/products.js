@@ -48,7 +48,7 @@ const productsData = [
         iconClass: "fas fa-heart-pulse",
         iconColor: "#3498DB",
         category: 3,
-        demoLink: "https://community-health-index-doctor-showcase.effortlessai.cn",
+        demoLink: "http://testjh.mai47.com:5173/residents",
         platform: "Web端",
         scenario: [3, 2]
     },
@@ -62,7 +62,7 @@ const productsData = [
         iconClass: "fas fa-notes-medical",
         iconColor: "#2ECC71",
         category: 3,
-        demoLink: "https://community-health-index-patient-showcase.effortlessai.cn/",
+        demoLink: "http://testjh.mai47.com:5174/",
         platform: "移动端",
         scenario: [3, 2]
     },
@@ -90,7 +90,7 @@ const productsData = [
         iconClass: "fas fa-clipboard-list",
         iconColor: "#27AE60",
         category: 3,
-        demoLink: "/demo/post-exam.html",
+        demoLink: "https://testjh.mai47.com:10007/login#/login",
         platform: "移动端",
         scenario: [3, 1]
     },
@@ -132,7 +132,7 @@ const productsData = [
         iconClass: "fas fa-file-medical-alt",
         iconColor: "#2980B9",
         category: 4,
-        demoLink: "http://xsnl.mai47.com:3002/login.html",
+        demoLink: "https://testxsnl.mai47.com:33001/login.html",
         platform: "移动端",
         scenario: [4]
     },
