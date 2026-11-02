@@ -114,7 +114,7 @@ const productsData = [
         demoLink: "http://xsnl.mai47.com:3003/login?redirect=%2Freports",
         entries: [
             { label: "医生端", link: "http://xsnl.mai47.com:3003/login?redirect=%2Freports" },
-            { label: "患者端", link: "https://testxsnl.mai47.com:33001/login.html" }
+            { label: "患者端", link: "http://xsnl.mai47.com:3002" }
         ],
         homeOrder: 5
     },
