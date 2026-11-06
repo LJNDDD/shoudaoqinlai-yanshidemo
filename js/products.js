@@ -45,7 +45,7 @@ const productsData = [
         iconColor: "#1661AB",
         platform: "Web端",
         platforms: ["Web端"],
-        demoLink: "http://newmedkb.mai47.com:15179/#home",
+        demoLink: "http://medkb.effortlessai.cn:15175/",
         homeOrder: 1
     },
     // 2. 检前个性化方案推荐（新增）
